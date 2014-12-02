@@ -20,7 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     settings = new QSettings("free", "DLLCollector", this);
     
     ui->lineEdit_Qt->setText( settings->value(SETTING_KEY).toString() );
+    
     connect(this, SIGNAL(sigTargetReleased()), SLOT(HWndReleased()) );
+    
     ui->toolButton_HWnd->installEventFilter(this);
 }
 
@@ -234,7 +236,7 @@ void MainWindow::updateDependencyTree()
         return;
     }
     
-    auto itemCreator = [](const QString &name, Qt::CheckState state)->QTreeWidgetItem*
+    auto itemCreator = [](const QString &name, Qt::CheckState state)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem;
         item->setText(0, name);

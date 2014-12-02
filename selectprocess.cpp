@@ -15,6 +15,8 @@ SelectProcess::SelectProcess(QWidget *parent) :
 {
     ui->setupUi(this);
     
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    
     updateProcessList();
     
     ui->processList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
