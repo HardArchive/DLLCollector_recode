@@ -26,7 +26,7 @@ bool isSubPath(const QString &dir, const QString &path)
 
 bool getModulesListFromProcessID(qint32 PID, QList<QString> &modules)
 {
-    auto w2s = [](const wchar_t *str)->const QString
+    auto w2s = [](const wchar_t *str)
     {
         return QString::fromWCharArray( str );
     };
