@@ -10,6 +10,9 @@
     <height>508</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>DLLCollector_recode 1.0</string>
   </property>

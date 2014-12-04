@@ -28,9 +28,7 @@ public:
     ~MainWindow();
     bool eventFilter(QObject *obj, QEvent *event);
 
-signals:
-    void sigTargetReleased(); 
-    
+
     //Private variables
 private:
     Ui::MainWindow *ui;
@@ -41,6 +39,7 @@ private:
     QString m_windowsDir{};
     
 private slots:
+    void do_toolButton_HWnd_release();
     void on_toolButton_HWnd_pressed();
     void on_toolButton_PID_clicked();
     void on_toolButton_Exe_clicked();
@@ -51,7 +50,6 @@ private slots:
     void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
     void on_pushButton_ClearLog_clicked();
     
-    void HWndReleased();
     void clearFields();
     void setHWnd(bool status);
     void setPID(bool status);
@@ -62,6 +60,10 @@ private slots:
 public slots:
     void addLog(const QString &str);
     
+    // QWidget interface
+protected:
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 };
 
 #endif // MAINWINDOW_H

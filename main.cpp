@@ -14,35 +14,39 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 {
     Q_UNUSED(context)
     QTextStream cerr(stderr);
+    QString DIV = "; ";
+    QString LS = "\n";
+    QString BEGIN = "====== %1 ======" + LS;
+    QString time = "Time: " + QTime::currentTime().toString("H:m:s") + LS;    
+    QString file = "File: " + QString(context.file) + LS;
+    QString function = "Function: " + QString(context.function) + LS;
+    QString line = "Line: " + QString::number(context.line) + LS;
+    QString message = "Message: " + msg + LS;
     
-    QString fomratedText = QTime::currentTime().toString("H:m:s: ") + msg;
+    
+    
+    QString formatedMessage = BEGIN + time + file + line + function + message;
+    
+    auto makeMessage = [&](const QString &prefix)
+    {
+        cerr << formatedMessage.arg(prefix) << endl;
+        if(local != nullptr)
+            local->addLog(prefix + ": " + msg);
+    };
     
     switch (type)
     {
     case QtDebugMsg:
-        
-        cerr << "debug_" << fomratedText << endl;
-        
-        if(local != nullptr)
-            local->addLog("debug_" + fomratedText);
+        makeMessage("debug");
         break;
     case QtWarningMsg:
-        cerr << "warning_" << fomratedText << endl;
-        
-        if(local != nullptr)
-            local->addLog("warning_" + fomratedText);
+        makeMessage("warning");
         break;
     case QtCriticalMsg:
-        cerr << "critical_" << fomratedText << endl;
-        
-        if(local != nullptr)
-            local->addLog("critical_" + fomratedText);
+        makeMessage("critical");
         break;
     case QtFatalMsg:
-        cerr << "fatal_" << fomratedText << endl;
-        
-        if(local != nullptr)
-            local->addLog("fatal_" + fomratedText);
+        makeMessage("fatal");
         abort();
     }
 }

@@ -5,6 +5,7 @@
 #include <QProcess>
 #include <QSettings>
 #include <QDebug>
+#include <QFileInfo>
 
 //Project
 #include "mainwindow.h"
@@ -18,11 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     
     settings = new QSettings("free", "DLLCollector", this);
-    
+
     ui->lineEdit_Qt->setText( settings->value(SETTING_KEY).toString() );
-    
-    connect(this, SIGNAL(sigTargetReleased()), SLOT(HWndReleased()) );
-    
+
     ui->toolButton_HWnd->installEventFilter(this);
 }
 
@@ -37,17 +36,13 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     {
         if( event->type() == QEvent::MouseButtonRelease)
         {
-            emit sigTargetReleased();
+            do_toolButton_HWnd_release();
         }
     }
     
     return QObject::eventFilter(obj, event);
 }
 
-void MainWindow::on_toolButton_HWnd_pressed()
-{
-    setCursor(Qt::CrossCursor); 
-}
 
 void MainWindow::on_toolButton_PID_clicked()
 {
@@ -151,7 +146,7 @@ void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column)
     }
 }
 
-void MainWindow::HWndReleased()
+void MainWindow::do_toolButton_HWnd_release()
 {
     unsetCursor();
     
@@ -159,6 +154,11 @@ void MainWindow::HWndReleased()
     setHWnd( getHWindowFromPoint(QCursor::pos(), m_hWnd) );
     setPID( getPIDFromHWND(m_hWnd, m_PID) );
     setExe( getFilePathFromPID(m_PID, m_exePath) );
+}
+
+void MainWindow::on_toolButton_HWnd_pressed()
+{
+    setCursor(Qt::CrossCursor); 
 }
 
 void MainWindow::clearFields()
@@ -236,7 +236,7 @@ void MainWindow::updateDependencyTree()
         return;
     }
     
-    auto itemCreator = [](const QString &name, Qt::CheckState state)
+    auto makeItem = [](const QString &name, Qt::CheckState state)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem;
         item->setText(0, name);
@@ -246,10 +246,10 @@ void MainWindow::updateDependencyTree()
         return item;
     };
     
-    QTreeWidgetItem *mainLibrary = itemCreator(tr("Main Library"), Qt::Checked);
-    QTreeWidgetItem *pluginsLibrary = itemCreator(tr("Plugins Library"), Qt::Checked);
-    QTreeWidgetItem *systemLibrary = itemCreator(tr("System Library"), Qt::Unchecked);
-    QTreeWidgetItem *otherLibrary = itemCreator(tr("Other Library"), Qt::Unchecked);
+    QTreeWidgetItem *mainLibrary = makeItem(tr("Main Library"), Qt::Checked);
+    QTreeWidgetItem *pluginsLibrary = makeItem(tr("Plugins Library"), Qt::Checked);
+    QTreeWidgetItem *systemLibrary = makeItem(tr("System Library"), Qt::Unchecked);
+    QTreeWidgetItem *otherLibrary = makeItem(tr("Other Library"), Qt::Unchecked);
     
     const QString MINGW_QT = ui->lineEdit_Qt->text();
     const QString BIN = MINGW_QT + QDir::separator() + "bin";
@@ -260,22 +260,22 @@ void MainWindow::updateDependencyTree()
     {
         if( isSubPath(BIN , str) )
         {
-            QTreeWidgetItem *childMain = itemCreator(str, Qt::Checked);
+            QTreeWidgetItem *childMain = makeItem(str, Qt::Checked);
             mainLibrary->addChild(childMain);
         }
         else if( isSubPath(PLUGINS , str) )
         {
-            QTreeWidgetItem *childPlugins = itemCreator(str, Qt::Checked);
+            QTreeWidgetItem *childPlugins = makeItem(str, Qt::Checked);
             pluginsLibrary->addChild(childPlugins);
         }
         else if( isSubPath(SYSTEM , str) )
         {
-            QTreeWidgetItem *childSystem = itemCreator(str, Qt::Unchecked);
+            QTreeWidgetItem *childSystem = makeItem(str, Qt::Unchecked);
             systemLibrary->addChild(childSystem);
         }
         else
         {
-            QTreeWidgetItem *childOther = itemCreator(str, Qt::Unchecked);
+            QTreeWidgetItem *childOther = makeItem(str, Qt::Unchecked);
             otherLibrary->addChild(childOther);
         }
     }
@@ -296,3 +296,15 @@ void MainWindow::on_pushButton_ClearLog_clicked()
     ui->listWidget_Log->clear();
 }
 
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    QFileInfo file(event->mimeData()->text());
+    qDebug() << file.completeSuffix();
+    
+    QMainWindow::dragEnterEvent(event);
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    QMainWindow::dropEvent(event);
+}
