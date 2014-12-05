@@ -298,13 +298,24 @@ void MainWindow::on_pushButton_ClearLog_clicked()
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
-    QFileInfo file(event->mimeData()->text());
-    qDebug() << file.completeSuffix();
+    QFileInfo file( QUrl(event->mimeData()->text()).toLocalFile() );
+
+    if( file.suffix().compare("exe", Qt::CaseInsensitive) == 0 )
+    {
+        event->setAccepted(true);
+        event->setDropAction(Qt::LinkAction);
+    }
     
     QMainWindow::dragEnterEvent(event);
 }
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
+    if( !event->isAccepted() )
+    {
+        m_exePath = QUrl(event->mimeData()->text()).toLocalFile();
+        setExe( true );
+    }
+    
     QMainWindow::dropEvent(event);
 }
