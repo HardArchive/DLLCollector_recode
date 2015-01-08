@@ -365,7 +365,7 @@ void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
     }
 }
 
-void MainWindow::on_pushButton_ClearLog_clicked()
+void MainWindow::on_pushButton_CleanLog_clicked()
 {
     ui->listWidget_Log->clear();
 }

@@ -76,7 +76,7 @@ private slots:
     void on_toolButton_QtPlugins_clicked();
     void on_toolButton_Copy_clicked();
     void on_treeWidget_itemChanged(QTreeWidgetItem* item, int column);
-    void on_pushButton_ClearLog_clicked();
+    void on_pushButton_CleanLog_clicked();
     void on_pushButton_Update_clicked();
     void on_checkBox_Log_clicked(bool checked);
     void on_pushButton_FindQt_clicked();

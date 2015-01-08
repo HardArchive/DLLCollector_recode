@@ -75,9 +75,9 @@
           </spacer>
          </item>
          <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_ClearLog">
+          <widget class="QPushButton" name="pushButton_CleanLog">
            <property name="text">
-            <string>Clear</string>
+            <string>Clean</string>
            </property>
           </widget>
          </item>
@@ -361,7 +361,7 @@
       <item>
        <widget class="QCheckBox" name="envExec">
         <property name="text">
-         <string>Set the environment for executing</string>
+         <string>Add the environment for executing</string>
         </property>
         <property name="checked">
          <bool>true</bool>
