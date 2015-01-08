@@ -1,7 +1,9 @@
 #ifndef SELECTPROCESS_H
 #define SELECTPROCESS_H
 
-//WinAPI
+//STL
+
+//Native
 
 //Qt
 #include <QDialog>

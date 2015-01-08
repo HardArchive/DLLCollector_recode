@@ -1,7 +1,9 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-//WinAPI
+//STL
+
+//Native
 
 //Qt
 #include <QtGlobal>
@@ -20,7 +22,6 @@ bool getProcessList(QList<ProcessInfo>& list);
 QString getFilePathFromPID(int PID);
 int getPIDFromHWND(int hWnd);
 int getHWindowFromPoint(const QPoint& point);
-bool copyFile(const QString& fileName, const QString& outDir);
 QString findPathQt();
 
 #endif // FUNCTIONS_H

@@ -1,4 +1,6 @@
-//WinAPI
+//STL
+
+//Native
 #include <windows.h>
 #include <psapi.h>
 #include <tlhelp32.h>
@@ -111,15 +113,6 @@ QString getWinDir()
     return QString(qgetenv("WINDIR"));
 }
 
-bool copyFile(const QString& filePath, const QString& outDir)
-{
-    QFile file(filePath);
-    QFileInfo fileInfo(file);
-    QString copyFilePath = outDir + QDir::separator() + fileInfo.fileName();
-
-    return file.copy(copyFilePath);
-}
-
 QString findPathQt()
 {
     //Ищем в параметрах среды
@@ -138,6 +131,7 @@ QString findPathQt()
         dir.cdUp();
         dir.cdUp();
         return dir.absolutePath();
+    } else {
     }
 
     //Ищем в реестре

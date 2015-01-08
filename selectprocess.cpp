@@ -1,4 +1,6 @@
-//WinAPI
+//STL
+
+//Native
 
 //Qt
 #include <QDebug>

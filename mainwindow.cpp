@@ -1,4 +1,6 @@
-//WinAPI
+//STL
+
+//Native
 
 //Qt
 #include <QtWidgets>
@@ -110,6 +112,8 @@ void MainWindow::setExe(const QString& str)
 
 void MainWindow::setQtLibs(const QString& str)
 {
+    qDebug() << tr("Qt Libs path is successfully received.");
+
     m_QtLibs = QDir::toNativeSeparators(str);
     m_settings->setValue(KEY_QTLIBS, m_QtLibs);
     ui->lineEdit_QtLibs->setText(m_QtLibs);
@@ -117,6 +121,8 @@ void MainWindow::setQtLibs(const QString& str)
 
 void MainWindow::setQtPlugins(const QString& str)
 {
+    qDebug() << tr("Qt Plugins path is successfully received.");
+
     m_QtPlugins = QDir::toNativeSeparators(str);
     m_settings->setValue(KEY_QTPLUGINS, m_QtPlugins);
     ui->lineEdit_QtPlugins->setText(m_QtPlugins);
@@ -155,6 +161,7 @@ void MainWindow::processError()
 
 void MainWindow::updateDependencyTree()
 {
+
     ui->treeWidget->clear();
     ui->treeWidget->setColumnCount(1);
 
@@ -178,7 +185,6 @@ void MainWindow::updateDependencyTree()
         item->setText(0, name);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setCheckState(0, state);
-        
         return item;
     };
 
@@ -314,34 +320,42 @@ void MainWindow::on_toolButton_QtPlugins_clicked()
 
 void MainWindow::on_toolButton_Copy_clicked()
 {
-    qDebug() << tr("Not implemented!");
+    auto copyFile = [&](const QString& filePath, const QString& outDir, ItemTypes types) {
+        QFile file(filePath);
+        QString outFile;
 
-    /*
+        if (types == ItemPlugins) {
+            QString tmp = filePath;
+            tmp = tmp.remove(0, m_QtPlugins.size());
+            outFile = outDir + tmp;
+            QDir().mkpath(QFileInfo(outFile).path());
+        } else {
+            outFile = outDir + QDir::separator() + QFileInfo(file).fileName();
+        }
+
+        return file.copy(outFile);
+    };
+
     QString copyPath = ui->lineEdit_Copy->text();
-    QDir tmpDir( copyPath );
-    if( !copyPath.isEmpty() && tmpDir.exists() )
-    {
-        auto &tree = ui->treeWidget;
-        
+    QDir tmpDir(copyPath);
+    if (!copyPath.isEmpty() && tmpDir.exists()) {
+        auto tree = ui->treeWidget;
+
         int topItemCount = tree->topLevelItemCount();
-        for(int i=0; i < topItemCount; i++)
-        {
-            auto *topItem = tree->topLevelItem(i);
-            
+        for (int nTopItem = 0; nTopItem < topItemCount; nTopItem++) {
+            auto topItem = tree->topLevelItem(nTopItem);
+
             int childItemCount = topItem->childCount();
-            for(int i2=0; i2 < childItemCount; i2++)
-            {
-                if ( topItem->child(i2)->checkState(0) == Qt::Checked)
-                {
-                    copyFile(topItem->child(i2)->text(0), ui->lineEdit_Copy->text());
+            for (int nChildItem = 0; nChildItem < childItemCount; nChildItem++) {
+                auto childItem = topItem->child(nChildItem);
+
+                if (childItem->checkState(0) == Qt::Checked) {
+                    copyFile(childItem->text(0), copyPath, ItemTypes(nTopItem));
                 }
             }
         }
-    }
-    else
+    } else
         qDebug() << tr("Please select a folder!");
-        
-    */
 }
 
 void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
@@ -371,10 +385,14 @@ void MainWindow::on_pushButton_FindQt_clicked()
     const QString QT_BIN = "bin";
     const QString QT_PLUGINS = "plugins";
 
+    qDebug() << tr("Search Qt...");
     const QString qtDir = findPathQt();
     if (!qtDir.isEmpty()) {
+        qDebug() << tr("Qt found!");
         setQtLibs(qtDir + QDir::separator() + QT_BIN);
         setQtPlugins(qtDir + QDir::separator() + QT_PLUGINS);
+    } else {
+        qDebug() << tr("Qt is not found.");
     }
 }
 

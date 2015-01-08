@@ -25,6 +25,12 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 private:
+    enum ItemTypes {
+        ItemMain,
+        ItemPlugins,
+        ItemSystem,
+        ItemOther,
+    };
     const QString KEY_QTLIBS = "QtLibs";
     const QString KEY_QTPLUGINS = "QtPlugins";
 
@@ -75,7 +81,6 @@ private slots:
     void on_checkBox_Log_clicked(bool checked);
     void on_pushButton_FindQt_clicked();
 
-    
 public slots:
     void addLog(const QString& str);
 

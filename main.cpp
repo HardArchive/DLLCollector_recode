@@ -1,4 +1,6 @@
-//WinAPI
+//STL
+
+//Native
 
 //Qt
 #include <QApplication>
@@ -12,7 +14,6 @@
 MainWindow* local;
 void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
-    Q_UNUSED(context)
     QTextStream cerr(stderr);
     QString DIV = "; ";
     QString LS = "\n";
