@@ -62,7 +62,7 @@ void SelectProcess::on_processList_itemSelectionChanged()
     m_PID = table->item(table->currentRow(), 1)->text().toInt();
 }
 
-qint32 SelectProcess::getPID() const
+qint64 SelectProcess::getPID() const
 {
     return m_PID;
 }

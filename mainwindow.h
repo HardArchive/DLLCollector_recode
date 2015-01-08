@@ -53,18 +53,18 @@ private:
 
 private slots:
     void clearFields();
+    void loadSettings();
     void setHWnd(int hWnd);
     void setPID(qint64 PID);
     void setExe(const QString& str);
     void setQtLibs(const QString& str);
     void setQtPlugins(const QString& str);
-    void processSelected(int PID);
+    void processSelected(qint64 PID);
     void processStarted();
     void processFinished(int exitStatus);
     void processError();
     void updateDependencyTree();
-    void loadSettings();
-
+    
     void on_treeWidget_itemChanged(QTreeWidgetItem* item, int column);
     void do_toolButton_HWnd_release();
     void on_toolButton_HWnd_pressed();

@@ -74,6 +74,16 @@ void MainWindow::clearFields()
     m_exePath.clear();
 }
 
+void MainWindow::loadSettings()
+{
+    //Загрузка параметров
+    m_QtLibs = m_settings->value(KEY_QTLIBS).toString();
+    ui->lineEdit_QtLibs->setText(m_QtLibs);
+
+    m_QtPlugins = m_settings->value(KEY_QTPLUGINS).toString();
+    ui->lineEdit_QtPlugins->setText(m_QtPlugins);
+}
+
 void MainWindow::setHWnd(int hWnd)
 {
     if (hWnd > 0) {
@@ -131,7 +141,7 @@ void MainWindow::setQtPlugins(const QString& str)
     ui->lineEdit_QtPlugins->setText(m_QtPlugins);
 }
 
-void MainWindow::processSelected(int PID)
+void MainWindow::processSelected(qint64 PID)
 {
     clearFields();
     setPID(PID);
@@ -222,16 +232,6 @@ void MainWindow::updateDependencyTree()
     ui->treeWidget->addTopLevelItem(otherLibrary);
 }
 
-void MainWindow::loadSettings()
-{
-    //Загрузка параметров
-    m_QtLibs = m_settings->value(KEY_QTLIBS).toString();
-    ui->lineEdit_QtLibs->setText(m_QtLibs);
-
-    m_QtPlugins = m_settings->value(KEY_QTPLUGINS).toString();
-    ui->lineEdit_QtPlugins->setText(m_QtPlugins);
-}
-
 void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
 {
     for (int i = 0; i < item->childCount(); i++) {
@@ -257,7 +257,7 @@ void MainWindow::on_toolButton_HWnd_pressed()
 void MainWindow::on_toolButton_PID_clicked()
 {
     SelectProcess sp(this);
-    connect(&sp, SIGNAL(processSelected(qint32)), this, SLOT(processSelected(qint32)));
+    connect(&sp, SIGNAL(processSelected(qint64)), this, SLOT(processSelected(qint64)));
     sp.show();
     sp.exec();
 }
