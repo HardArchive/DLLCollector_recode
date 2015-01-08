@@ -32,7 +32,7 @@ SelectProcess::~SelectProcess()
 void SelectProcess::updateProcessList()
 {
     QList<ProcessInfo> list;
-    auto& table = ui->processList;
+    auto table = ui->processList;
 
     table->clearContents();
     table->setRowCount(0);
@@ -58,7 +58,7 @@ void SelectProcess::on_pushButton_Update_clicked()
 
 void SelectProcess::on_processList_itemSelectionChanged()
 {
-    auto& table = ui->processList;
+    auto table = ui->processList;
     m_PID = table->item(table->currentRow(), 1)->text().toInt();
 }
 

@@ -20,7 +20,10 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    
+    //Титул приложения
+    setWindowTitle("DLLCollector_recode 1.1");
+    
     //Для работы с параметрами
     m_settings = new QSettings("free", "DLLCollector_recode", this);
 
@@ -64,7 +67,7 @@ void MainWindow::clearFields()
     ui->lineEdit_HWnd->clear();
     ui->lineEdit_PID->clear();
     ui->lineEdit_Exe->clear();
-    ui->lineEdit_Copy->clear();
+    ui->lineEdit_CopyTo->clear();
 
     m_hWnd = 0;
     m_PID = 0;
@@ -104,7 +107,7 @@ void MainWindow::setExe(const QString& str)
         qDebug() << tr("File path is successfully received.");
         m_exePath = QDir::toNativeSeparators(str);
         ui->lineEdit_Exe->setText(m_exePath);
-        ui->lineEdit_Copy->setText(QDir::toNativeSeparators(QFileInfo(m_exePath).absolutePath()));
+        ui->lineEdit_CopyTo->setText(QDir::toNativeSeparators(QFileInfo(m_exePath).absolutePath()));
     } else {
         qWarning() << tr("Function getFilePathFromPID return false.");
     }
@@ -229,6 +232,13 @@ void MainWindow::loadSettings()
     ui->lineEdit_QtPlugins->setText(m_QtPlugins);
 }
 
+void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
+{
+    for (int i = 0; i < item->childCount(); i++) {
+        item->child(i)->setCheckState(column, item->checkState(column));
+    }
+}
+
 void MainWindow::do_toolButton_HWnd_release()
 {
     unsetCursor();
@@ -262,16 +272,6 @@ void MainWindow::on_toolButton_Exe_clicked()
     }
 }
 
-void MainWindow::on_toolButton_CopyDir_clicked()
-{
-    QString tmpCopy = QFileDialog::getExistingDirectory(this, tr("Open Directory Copy"),
-                                                        "",
-                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    if (!tmpCopy.isEmpty()) {
-        ui->lineEdit_Copy->setText(QDir::toNativeSeparators(tmpCopy));
-    }
-}
-
 void MainWindow::on_toolButton_Exec_clicked()
 {
     if (QFile::exists(m_exePath)) {
@@ -298,27 +298,17 @@ void MainWindow::on_toolButton_Kill_clicked()
     m_process.terminate();
 }
 
-void MainWindow::on_toolButton_QtLibs_clicked()
+void MainWindow::on_toolButton_SelectDirCopyTo_clicked()
 {
-    QString tmp = QFileDialog::getExistingDirectory(this, tr("Open Directory Qt Libs"),
-                                                    "",
-                                                    QFileDialog::ShowDirsOnly);
-    if (!tmp.isEmpty()) {
-        setQtLibs(tmp);
+    QString tmpCopy = QFileDialog::getExistingDirectory(this, tr("Open Directory Copy"),
+                                                        "",
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!tmpCopy.isEmpty()) {
+        ui->lineEdit_CopyTo->setText(QDir::toNativeSeparators(tmpCopy));
     }
 }
 
-void MainWindow::on_toolButton_QtPlugins_clicked()
-{
-    QString tmp = QFileDialog::getExistingDirectory(this, tr("Open Directory Qt Plugins"),
-                                                    "",
-                                                    QFileDialog::ShowDirsOnly);
-    if (!tmp.isEmpty()) {
-        setQtPlugins(tmp);
-    }
-}
-
-void MainWindow::on_toolButton_Copy_clicked()
+void MainWindow::on_toolButton_CopyTo_clicked()
 {
     auto copyFile = [&](const QString& filePath, const QString& outDir, ItemTypes types) {
         QFile file(filePath);
@@ -336,7 +326,7 @@ void MainWindow::on_toolButton_Copy_clicked()
         return file.copy(outFile);
     };
 
-    QString copyPath = ui->lineEdit_Copy->text();
+    QString copyPath = ui->lineEdit_CopyTo->text();
     QDir tmpDir(copyPath);
     if (!copyPath.isEmpty() && tmpDir.exists()) {
         auto tree = ui->treeWidget;
@@ -358,21 +348,24 @@ void MainWindow::on_toolButton_Copy_clicked()
         qDebug() << tr("Please select a folder!");
 }
 
-void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
+void MainWindow::on_toolButton_QtLibs_clicked()
 {
-    for (int i = 0; i < item->childCount(); i++) {
-        item->child(i)->setCheckState(column, item->checkState(column));
+    QString tmp = QFileDialog::getExistingDirectory(this, tr("Open Directory Qt Libs"),
+                                                    "",
+                                                    QFileDialog::ShowDirsOnly);
+    if (!tmp.isEmpty()) {
+        setQtLibs(tmp);
     }
 }
 
-void MainWindow::on_pushButton_CleanLog_clicked()
+void MainWindow::on_toolButton_QtPlugins_clicked()
 {
-    ui->listWidget_Log->clear();
-}
-
-void MainWindow::on_pushButton_Update_clicked()
-{
-    updateDependencyTree();
+    QString tmp = QFileDialog::getExistingDirectory(this, tr("Open Directory Qt Plugins"),
+                                                    "",
+                                                    QFileDialog::ShowDirsOnly);
+    if (!tmp.isEmpty()) {
+        setQtPlugins(tmp);
+    }
 }
 
 void MainWindow::on_checkBox_Log_clicked(bool checked)
@@ -394,6 +387,16 @@ void MainWindow::on_pushButton_FindQt_clicked()
     } else {
         qDebug() << tr("Qt is not found.");
     }
+}
+
+void MainWindow::on_pushButton_UpdateTree_clicked()
+{
+    updateDependencyTree();
+}
+
+void MainWindow::on_pushButton_CleanLog_clicked()
+{
+    ui->listWidget_Log->clear();
 }
 
 void MainWindow::addLog(const QString& str)
