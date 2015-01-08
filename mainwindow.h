@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow {
 private:
     const QString KEY_QTLIBS = "QtLibs";
     const QString KEY_QTPLUGINS = "QtPlugins";
-    
+
 public:
     explicit MainWindow(QWidget* parent = 0);
     ~MainWindow();
@@ -56,7 +56,7 @@ private slots:
     void processFinished(int exitStatus);
     void updateDependencyTree();
     void loadSettings();
-    
+
     void do_toolButton_HWnd_release();
     void on_toolButton_HWnd_pressed();
     void on_toolButton_PID_clicked();
@@ -71,7 +71,7 @@ private slots:
     void on_pushButton_Update_clicked();
     void on_checkBox_Log_clicked(bool checked);
     void on_pushButton_FindQt_clicked();
-    
+
 public slots:
     void addLog(const QString& str);
 
@@ -79,8 +79,7 @@ public slots:
 protected:
     void dragEnterEvent(QDragEnterEvent* event);
     void dropEvent(QDropEvent* event);
+    void closeEvent(QCloseEvent* event);
 };
-
-
 
 #endif // MAINWINDOW_H

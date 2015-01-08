@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget* parent)
 
     //Для работы с параметрами
     m_settings = new QSettings("free", "DLLCollector_recode", this);
+    
+    //Загрузка параметров
     loadSettings();
 
     //Целевой процесс завершился
@@ -348,8 +350,8 @@ void MainWindow::on_checkBox_Log_clicked(bool checked)
 
 void MainWindow::on_pushButton_FindQt_clicked()
 {
-    const QString QT_BIN = "Bin";
-    const QString QT_PLUGINS = "Plugins";
+    const QString QT_BIN = "bin";
+    const QString QT_PLUGINS = "plugins";
 
     const QString qtDir = findPathQt();
     if (!qtDir.isEmpty()) {
@@ -382,4 +384,11 @@ void MainWindow::dropEvent(QDropEvent* event)
     }
 
     QMainWindow::dropEvent(event);
+}
+
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    Q_UNUSED(event)
+
+    m_process.close();
 }
