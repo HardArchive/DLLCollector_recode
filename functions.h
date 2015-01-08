@@ -8,19 +8,19 @@
 
 //Project
 
-struct ProcessInfo
-{
+struct ProcessInfo {
     QString name;
     qint32 pid;
 };
 
 QString getWinDir();
-bool isSubPath(const QString &dir, const QString &path);
-bool getModulesListFromProcessID(qint32 PID, QList<QString> &modules);
-bool getProcessList(QList<ProcessInfo> &list);
-bool getFilePathFromPID(qint32 PID, QString &fileName);
-bool getPIDFromHWND(qint32 hWnd, qint32 &PID);
-bool getHWindowFromPoint(const QPoint &point, qint64 &hWnd);
-bool copyFile(const QString &fileName, const QString &outDir);
+bool isSubPath(const QString& dir, const QString& path);
+bool getModulesListFromProcessID(int PID, QList<QString>& modules);
+bool getProcessList(QList<ProcessInfo>& list);
+QString getFilePathFromPID(int PID);
+int getPIDFromHWND(int hWnd);
+int getHWindowFromPoint(const QPoint& point);
+bool copyFile(const QString& fileName, const QString& outDir);
+QString findPathQt();
 
 #endif // FUNCTIONS_H

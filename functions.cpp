@@ -9,70 +9,63 @@
 //Project
 #include "functions.h"
 
-bool isSubPath(const QString &dir, const QString &path)
+bool isSubPath(const QString& dir, const QString& path)
 {
-    if ( dir.isEmpty() ) return false;
-    
+    if (dir.isEmpty())
+        return false;
+
     QString nativeDir = QDir::toNativeSeparators(dir);
     QString nativePath = QDir::toNativeSeparators(path);
-    
-    if( nativeDir.lastIndexOf(QDir::separator()) != nativeDir.size()-1 )
-    {
+
+    if (nativeDir.lastIndexOf(QDir::separator()) != nativeDir.size() - 1) {
         nativeDir += QDir::separator();
     }
-    
-    return !nativePath.indexOf( nativeDir, Qt::CaseInsensitive );
+
+    return !nativePath.indexOf(nativeDir, Qt::CaseInsensitive);
 }
 
-bool getModulesListFromProcessID(qint32 PID, QList<QString> &modules)
+bool getModulesListFromProcessID(int PID, QList<QString>& modules)
 {
-    auto w2s = [](const wchar_t *str)
-    {
+    auto w2s = [](const wchar_t* str) {
         return QString::fromWCharArray( str );
     };
-    
+
     MODULEENTRY32 me32;
     me32.dwSize = sizeof(MODULEENTRY32);
 
-    HANDLE hSnap;
-    hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, PID);
-    if(hSnap != NULL)
-    {
-        if (Module32First(hSnap, &me32))
-        {
-            while(Module32Next(hSnap, &me32))
-            {
-                modules.append( w2s(me32.szExePath) );
+    HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, PID);
+    if (hSnap != NULL) {
+        if (Module32First(hSnap, &me32)) {
+            while (Module32Next(hSnap, &me32)) {
+                modules.append(w2s(me32.szExePath));
             }
-            
+
             CloseHandle(hSnap);
             return true;
         }
         CloseHandle(hSnap);
         return false;
     }
-    
+
     return false;
 }
 
-bool getProcessList(QList<ProcessInfo> &list)
+bool getProcessList(QList<ProcessInfo>& list)
 {
     PROCESSENTRY32 pe32;
     pe32.dwSize = sizeof(PROCESSENTRY32);
 
     HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPALL, 0);
 
-    if( hProcessSnap == INVALID_HANDLE_VALUE) return false;
-    if( Process32First(hProcessSnap, &pe32) )
-    {
-        do
-        {
-            QString tmpName =  QString::fromWCharArray( pe32.szExeFile );
+    if (hProcessSnap == INVALID_HANDLE_VALUE)
+        return false;
+    if (Process32First(hProcessSnap, &pe32)) {
+        do {
+            QString tmpName = QString::fromWCharArray(pe32.szExeFile);
             qint32 tmpPID = pe32.th32ProcessID;
-            list.append({tmpName, tmpPID}); 
-        }
-        while ( Process32Next(hProcessSnap, &pe32) );
-        
+            list.append({ tmpName, tmpPID });
+        } while (Process32Next(hProcessSnap, &pe32));
+
         CloseHandle(hProcessSnap);
         return true;
     }
@@ -81,51 +74,105 @@ bool getProcessList(QList<ProcessInfo> &list)
     return false;
 }
 
-bool getFilePathFromPID(qint32 PID, QString &fileName)
+QString getFilePathFromPID(int PID)
 {
-    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, FALSE, PID);
-    if( hProcess == 0 ) return false;
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, PID);
+    if (hProcess == 0)
+        return QString();
 
-    wchar_t bufPath[MAX_PATH+1]{};
+    wchar_t bufPath[MAX_PATH + 1]{};
     DWORD result = GetModuleFileNameEx(hProcess, NULL, bufPath, MAX_PATH);
     CloseHandle(hProcess);
-    if( result == 0 ) return false;
 
-    fileName = QString::fromWCharArray( bufPath );
-    return true;
+    if (result == 0)
+        return QString();
+
+    return QString::fromWCharArray(bufPath);
 }
 
-bool getPIDFromHWND(qint32 hWnd, qint32 &PID)
+int getPIDFromHWND(int hWnd)
 {
-    DWORD tmpPID;
-    DWORD result = GetWindowThreadProcessId( reinterpret_cast<HWND>(hWnd), &tmpPID);
-    if( result == 0 ) return false;
-    
-    PID = tmpPID;
-    return true;
+    DWORD tmpPID{};
+    GetWindowThreadProcessId(reinterpret_cast<HWND>(hWnd), &tmpPID);
+
+    return tmpPID;
 }
 
-bool getHWindowFromPoint(const QPoint &point, qint64 &hWnd)
+int getHWindowFromPoint(const QPoint& point)
 {
-    POINT tmpPoint = {point.x(), point.y()};
-    HWND tmpHWnd = WindowFromPoint( tmpPoint );
-    if( tmpHWnd == 0 ) return false;
-    
-    hWnd = reinterpret_cast<qint64>( tmpHWnd );
-    return true;
-}
+    POINT tmpPoint = { point.x(), point.y() };
+    HWND tmpHWnd = WindowFromPoint(tmpPoint);
 
+    return reinterpret_cast<int>(tmpHWnd);
+}
 
 QString getWinDir()
 {
-    return QString( qgetenv("WINDIR") );
+    return QString(qgetenv("WINDIR"));
 }
 
-bool copyFile(const QString &filePath, const QString &outDir)
+bool copyFile(const QString& filePath, const QString& outDir)
 {
     QFile file(filePath);
     QFileInfo fileInfo(file);
     QString copyFilePath = outDir + QDir::separator() + fileInfo.fileName();
-    
-    return file.copy( copyFilePath );
+
+    return file.copy(copyFilePath);
+}
+
+QString findPathQt()
+{
+    //Ищем в параметрах среды
+    const wchar_t* QT_CORE_FILE = L"Qt5Core.dll";
+    DWORD nBufferLength = 255;
+    wchar_t lpBuffer[nBufferLength];
+    bool findEnv = SearchPath(NULL,
+                              QT_CORE_FILE,
+                              NULL,
+                              nBufferLength,
+                              (LPWSTR)&lpBuffer,
+                              NULL);
+    if (findEnv) {
+        QString tmp = QString::fromWCharArray(lpBuffer);
+        QDir dir(tmp);
+        dir.cdUp();
+        dir.cdUp();
+        return dir.absolutePath();
+    }
+
+    //Ищем в реестре
+    QString regKey = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\";
+    QSettings uninstall(regKey, QSettings::NativeFormat);
+
+    QStringList qtKeys = uninstall.childGroups().filter("Qt ");
+    QString qtPath;
+    if (!qtKeys.isEmpty()) {
+        regKey.append(qtKeys.first());
+        qtPath = QSettings(regKey, QSettings::NativeFormat).value("InstallLocation").toString();
+    }
+
+    //Ищем в директории Qt
+    const QString QT_LOG_FILE = "InstallationLog.txt";
+
+    if (!qtPath.isEmpty()) {
+        QFile qtLog(qtPath + QDir::separator() + QT_LOG_FILE);
+        qtLog.open(QFile::ReadOnly);
+        QString strLog = qtLog.readAll();
+
+        QString var1 = "qtenv2.bat";
+        int qtenv2 = strLog.indexOf(var1);
+
+        QString var2 = "arguments: ";
+        int arguments = strLog.indexOf(var2, qtenv2 - 100);
+        arguments += var2.size();
+
+        QString tmp = strLog.mid(arguments, qtenv2 - arguments);
+
+        QDir dir(tmp);
+        dir.cdUp();
+
+        return dir.absolutePath();
+    }
+
+    return QString();
 }

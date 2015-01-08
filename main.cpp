@@ -9,33 +9,29 @@
 //Project
 #include "mainwindow.h"
 
-MainWindow *local;
-void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+MainWindow* local;
+void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
     Q_UNUSED(context)
     QTextStream cerr(stderr);
     QString DIV = "; ";
     QString LS = "\n";
     QString BEGIN = "====== %1 ======" + LS;
-    QString time = "Time: " + QTime::currentTime().toString("H:m:s") + LS;    
+    QString time = "Time: " + QTime::currentTime().toString("H:m:s") + LS;
     QString file = "File: " + QString(context.file) + LS;
     QString function = "Function: " + QString(context.function) + LS;
     QString line = "Line: " + QString::number(context.line) + LS;
     QString message = "Message: " + msg + LS;
-    
-    
-    
+
     QString formatedMessage = BEGIN + time + file + line + function + message;
-    
-    auto makeMessage = [&](const QString &prefix)
-    {
+
+    auto makeMessage = [&](const QString& prefix) {
         cerr << formatedMessage.arg(prefix) << endl;
         if(local != nullptr)
             local->addLog(prefix + ": " + msg);
     };
-    
-    switch (type)
-    {
+
+    switch (type) {
     case QtDebugMsg:
         makeMessage("debug");
         break;
@@ -51,15 +47,15 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     }
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     qInstallMessageHandler(myMessageOutput);
-    setlocale( LC_ALL, "Russian" );
-    
+    setlocale(LC_ALL, "Russian");
+
     QApplication a(argc, argv);
     MainWindow w;
     local = &w;
     w.show();
-    
+
     return a.exec();
 }
