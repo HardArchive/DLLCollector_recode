@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>379</width>
-    <height>463</height>
+    <height>471</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -159,10 +159,10 @@
       </item>
       <item row="2" column="0">
        <layout class="QGridLayout" name="lay_Exe">
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit_Exe">
-          <property name="readOnly">
-           <bool>true</bool>
+        <item row="0" column="3">
+         <widget class="QToolButton" name="toolButton_Exec">
+          <property name="text">
+           <string>Exec</string>
           </property>
          </widget>
         </item>
@@ -173,6 +173,13 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lineEdit_Exe">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label_Exe">
           <property name="text">
@@ -180,10 +187,10 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="3">
-         <widget class="QToolButton" name="toolButton_Exec">
+        <item row="0" column="4">
+         <widget class="QToolButton" name="toolButton_Kill">
           <property name="text">
-           <string>Exec</string>
+           <string>Kill</string>
           </property>
          </widget>
         </item>

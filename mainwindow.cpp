@@ -21,12 +21,18 @@ MainWindow::MainWindow(QWidget* parent)
 
     //Для работы с параметрами
     m_settings = new QSettings("free", "DLLCollector_recode", this);
-    
+
     //Загрузка параметров
     loadSettings();
 
+    //Целевой процесс запущен
+    connect(&m_process, SIGNAL(started()), SLOT(processStarted()));
+
     //Целевой процесс завершился
     connect(&m_process, SIGNAL(finished(int)), SLOT(processFinished(int)));
+
+    //Ошибка при запуске целевого процесса
+    connect(&m_process, SIGNAL(error(QProcess::ProcessError)), SLOT(processError()));
 
     //Видимость лога
     ui->widget_Log->setVisible(ui->checkBox_Log->isChecked());
@@ -94,9 +100,9 @@ void MainWindow::setExe(const QString& str)
 {
     if (!str.isEmpty()) {
         qDebug() << tr("File path is successfully received.");
-        m_exePath = str;
-        ui->lineEdit_Exe->setText(str);
-        ui->lineEdit_Copy->setText(QDir::toNativeSeparators(QFileInfo(str).absolutePath()));
+        m_exePath = QDir::toNativeSeparators(str);
+        ui->lineEdit_Exe->setText(m_exePath);
+        ui->lineEdit_Copy->setText(QDir::toNativeSeparators(QFileInfo(m_exePath).absolutePath()));
     } else {
         qWarning() << tr("Function getFilePathFromPID return false.");
     }
@@ -106,14 +112,14 @@ void MainWindow::setQtLibs(const QString& str)
 {
     m_QtLibs = QDir::toNativeSeparators(str);
     m_settings->setValue(KEY_QTLIBS, m_QtLibs);
-    ui->lineEdit_QtLibs->setText(QDir::toNativeSeparators(m_QtLibs));
+    ui->lineEdit_QtLibs->setText(m_QtLibs);
 }
 
 void MainWindow::setQtPlugins(const QString& str)
 {
     m_QtPlugins = QDir::toNativeSeparators(str);
     m_settings->setValue(KEY_QTPLUGINS, m_QtPlugins);
-    ui->lineEdit_QtPlugins->setText(QDir::toNativeSeparators(m_QtPlugins));
+    ui->lineEdit_QtPlugins->setText(m_QtPlugins);
 }
 
 void MainWindow::processSelected(int PID)
@@ -121,6 +127,13 @@ void MainWindow::processSelected(int PID)
     clearFields();
     setPID(PID);
     setExe(getFilePathFromPID(PID));
+}
+
+void MainWindow::processStarted()
+{
+    qDebug() << tr("Process started.");
+    Sleep(500);
+    setPID(m_process.processId());
 }
 
 void MainWindow::processFinished(int exitStatus)
@@ -133,6 +146,11 @@ void MainWindow::processFinished(int exitStatus)
     ui->lineEdit_PID->clear();
     m_hWnd = 0;
     m_PID = 0;
+}
+
+void MainWindow::processError()
+{
+    qDebug() << m_process.errorString();
 }
 
 void MainWindow::updateDependencyTree()
@@ -254,24 +272,24 @@ void MainWindow::on_toolButton_Exec_clicked()
         ui->lineEdit_HWnd->clear();
         m_hWnd = 0;
 
-        qDebug() << tr("Process started.");
-
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        ;
 
         if (ui->envExec->isChecked()) {
             env.insert("Path", m_QtLibs);
         }
 
+        m_process.close();
         m_process.setProcessEnvironment(env);
-        m_process.start(m_exePath);
-
-        Sleep(1000);
-        setPID(m_process.processId());
+        m_process.start("\"" + m_exePath + "\"");
 
     } else {
         qDebug() << tr("Please select an executable file.");
     }
+}
+
+void MainWindow::on_toolButton_Kill_clicked()
+{
+    m_process.terminate();
 }
 
 void MainWindow::on_toolButton_QtLibs_clicked()

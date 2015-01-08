@@ -53,7 +53,9 @@ private slots:
     void setQtLibs(const QString& str);
     void setQtPlugins(const QString& str);
     void processSelected(int PID);
+    void processStarted();
     void processFinished(int exitStatus);
+    void processError();
     void updateDependencyTree();
     void loadSettings();
 
@@ -63,6 +65,7 @@ private slots:
     void on_toolButton_Exe_clicked();
     void on_toolButton_CopyDir_clicked();
     void on_toolButton_Exec_clicked();
+    void on_toolButton_Kill_clicked();
     void on_toolButton_QtLibs_clicked();
     void on_toolButton_QtPlugins_clicked();
     void on_toolButton_Copy_clicked();
@@ -72,6 +75,7 @@ private slots:
     void on_checkBox_Log_clicked(bool checked);
     void on_pushButton_FindQt_clicked();
 
+    
 public slots:
     void addLog(const QString& str);
 
