@@ -23,8 +23,13 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
 
-    //Титул приложения
-    setWindowTitle("DLLCollector_recode 1.2");
+//Титул приложения
+#ifdef Q_OS_WIN64
+    QString currentProcessType = trUtf8(" - 64-разрядная версия");
+#else
+    QString currentProcessType = trUtf8(" - 32-разрядная версия");
+#endif
+    setWindowTitle("DLLCollector_recode 1.0" + currentProcessType);
 
     //Лог
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -312,7 +317,7 @@ void MainWindow::on_toolButton_Exec_clicked()
         if (ui->envExec->isChecked()) {
             env.insert("Path", m_QtLibs);
         }
-        
+
         m_process.close();
         m_process.setProcessEnvironment(env);
         m_process.start("\"" + m_exePath + "\"");
