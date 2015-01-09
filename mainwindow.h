@@ -12,6 +12,7 @@
 QT_BEGIN_NAMESPACE
 class QTreeWidgetItem;
 class QSettings;
+class QTableWidget;
 QT_END_NAMESPACE
 
 //Project
@@ -34,7 +35,7 @@ private:
     };
     const QString KEY_QTLIBS = "QtLibs";
     const QString KEY_QTPLUGINS = "QtPlugins";
-    
+
     //Private variables
 private:
     Ui::MainWindow* ui;
@@ -47,20 +48,22 @@ private:
     QString m_QtLibs{};
     QString m_QtPlugins{};
     QProcess m_process;
-    bool m_logWork;
+    
 
 public:
     explicit MainWindow(QWidget* parent = 0);
     ~MainWindow();
+    
     bool eventFilter(QObject* obj, QEvent* event);
-
+    static QTableWidget* m_log;
+    
 private slots:
     void clearFields();
     void loadSettings();
     void setHWnd(qintptr hWnd);
     void setPID(qint64 PID);
     void setExe(const QString& str);
-    void seCopyTo(const QString& str);
+    void setCopyTo(const QString& str);
     void setQtLibs(const QString& str);
     void setQtPlugins(const QString& str);
     void processSelected(qint64 PID);
@@ -86,7 +89,7 @@ private slots:
     void on_pushButton_CleanLog_clicked();
 
 public slots:
-    void addLog(const QString& fun, const QString& mes);
+    static void _addLog(const QString& fun, const QString& mes);
 
     // QWidget interface
 protected:

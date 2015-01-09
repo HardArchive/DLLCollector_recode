@@ -30,7 +30,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QS
         cerr << formatedMessage.arg(prefix) << endl;
         
         if(local != nullptr){
-            local->addLog(context.function, msg);
+            local->_addLog(context.function, prefix + ": " + msg);
         }
     };
 

@@ -9,11 +9,9 @@
 #include <QDebug>
 
 //Project
+#include "mainwindow.h"
 
-
-#define _debug qDebug().noquote()
-#define _warning qWarning().noquote()
-#define _critical qCritical().noquote(
+#define addLog(str) MainWindow::_addLog(Q_FUNC_INFO, str);
 
 #endif // DEBUG
 

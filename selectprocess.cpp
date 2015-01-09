@@ -49,7 +49,7 @@ void SelectProcess::updateProcessList()
             table->setItem(row, 1, pid);
         }
     } else {
-        _warning << tr("Function getProcessList return 0.");
+        addLog(trUtf8("Function getProcessList return 0."));
     }
 }
 
@@ -75,7 +75,7 @@ void SelectProcess::on_pushButton_Ok_clicked()
         emit processSelected(m_PID);
         close();
     } else {
-        _debug << tr("Please first select process!");
-        QMessageBox::information(this, tr("Information"), tr("Please first select the process!"));
+        addLog(trUtf8("Please first select process!"));
+        QMessageBox::information(this, tr("Information"), trUtf8("Please first select the process!"));
     }
 }
