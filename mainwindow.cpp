@@ -312,7 +312,7 @@ void MainWindow::on_toolButton_Exec_clicked()
         if (ui->envExec->isChecked()) {
             env.insert("Path", m_QtLibs);
         }
-
+        
         m_process.close();
         m_process.setProcessEnvironment(env);
         m_process.start("\"" + m_exePath + "\"");

@@ -27,8 +27,3 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     selectprocess.ui
-
-QMAKE_LFLAGS_RELEASE = -Wl,-s
-QMAKE_CXXFLAGS_RELEASE += -g
-QMAKE_CFLAGS_RELEASE += -g
-QMAKE_LFLAGS_RELEASE =
