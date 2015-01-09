@@ -9,7 +9,12 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = DLLCollector_recode
+contains(QT_ARCH, x86_64) {
+    TARGET = DLLCollector_recode_x64
+} else {
+    TARGET = DLLCollector_recode_x32
+}
+
 TEMPLATE = app
 CONFIG += C++14
 

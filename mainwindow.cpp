@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    
 //Титул приложения
 #ifdef Q_OS_WIN64
     QString currentProcessType = trUtf8(" - 64-разрядная версия");
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget* parent)
 #endif
     setWindowTitle("DLLCollector_recode 1.0" + currentProcessType);
 
-    //Лог
+    //Виджет уведомления
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableWidget_Log->horizontalHeader()->resizeSection(0, 200);
     m_log = ui->tableWidget_Log;
