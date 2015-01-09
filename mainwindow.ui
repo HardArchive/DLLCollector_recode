@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>533</width>
+    <width>508</width>
     <height>521</height>
    </rect>
   </property>
@@ -47,7 +47,7 @@
          <item row="0" column="1">
           <widget class="QLabel" name="label_Log">
            <property name="text">
-            <string>Log</string>
+            <string>История уведомлений</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -69,8 +69,11 @@
          </item>
          <item row="2" column="1">
           <widget class="QPushButton" name="pushButton_CleanLog">
+           <property name="toolTip">
+            <string>Очищаем историю уведомлений</string>
+           </property>
            <property name="text">
-            <string>Clean</string>
+            <string>Очистить</string>
            </property>
           </widget>
          </item>
@@ -89,35 +92,44 @@
          </item>
          <item row="1" column="0" colspan="3">
           <widget class="QTableWidget" name="tableWidget_Log">
+           <property name="toolTip">
+            <string>История уведомлений</string>
+           </property>
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
+           <property name="showDropIndicator" stdset="0">
+            <bool>false</bool>
+           </property>
+           <property name="dragDropOverwriteMode">
+            <bool>false</bool>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
            <property name="selectionMode">
-            <enum>QAbstractItemView::SingleSelection</enum>
+            <enum>QAbstractItemView::ExtendedSelection</enum>
            </property>
            <property name="selectionBehavior">
             <enum>QAbstractItemView::SelectRows</enum>
            </property>
-           <attribute name="horizontalHeaderCascadingSectionResizes">
-            <bool>true</bool>
-           </attribute>
            <attribute name="horizontalHeaderHighlightSections">
             <bool>false</bool>
            </attribute>
-           <attribute name="verticalHeaderVisible">
-            <bool>true</bool>
+           <attribute name="verticalHeaderDefaultSectionSize">
+            <number>19</number>
            </attribute>
            <attribute name="verticalHeaderHighlightSections">
             <bool>false</bool>
            </attribute>
            <column>
             <property name="text">
-             <string>Function</string>
+             <string>Функция</string>
             </property>
            </column>
            <column>
             <property name="text">
-             <string>Message</string>
+             <string>Сообщение</string>
             </property>
            </column>
           </widget>
@@ -134,7 +146,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_HWnd">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Handle window:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>Дескриптор окна</string>
           </property>
          </widget>
         </item>
@@ -149,6 +161,12 @@
          <widget class="QToolButton" name="toolButton_HWnd">
           <property name="mouseTracking">
            <bool>true</bool>
+          </property>
+          <property name="toolTip">
+           <string>Выбрать окно указателем мыши</string>
+          </property>
+          <property name="whatsThis">
+           <string/>
           </property>
           <property name="text">
            <string>...</string>
@@ -165,7 +183,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_PID">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Process ID:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>Идентификатор процесса</string>
           </property>
          </widget>
         </item>
@@ -178,6 +196,9 @@
         </item>
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButton_PID">
+          <property name="toolTip">
+           <string>Выбрать процесс из списка</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -189,6 +210,9 @@
        <layout class="QGridLayout" name="lay_Exe">
         <item row="0" column="3">
          <widget class="QToolButton" name="toolButton_Exec">
+          <property name="toolTip">
+           <string>Запустить выбранный исполняемый файл</string>
+          </property>
           <property name="text">
            <string>Exec</string>
           </property>
@@ -196,6 +220,9 @@
         </item>
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButton_Exe">
+          <property name="toolTip">
+           <string>Открыть дилог выбора, исполняемого файла</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -211,12 +238,15 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_Exe">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Exe:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>Исполняемый файл</string>
           </property>
          </widget>
         </item>
         <item row="0" column="4">
          <widget class="QToolButton" name="toolButton_Kill">
+          <property name="toolTip">
+           <string>Завершить запущенное приложение</string>
+          </property>
           <property name="text">
            <string>Kill</string>
           </property>
@@ -228,6 +258,9 @@
        <layout class="QGridLayout" name="lay_CopyTo">
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButton_SelectDirCopyTo">
+          <property name="toolTip">
+           <string>Открыть дилог выбора директории, в которую будет произведено копирование модулей</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -236,7 +269,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_CopyTo">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy libs to:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>Копировать в</string>
           </property>
          </widget>
         </item>
@@ -249,6 +282,9 @@
         </item>
         <item row="0" column="3">
          <widget class="QToolButton" name="toolButton_CopyTo">
+          <property name="toolTip">
+           <string>Производим копирование выбранных модулей</string>
+          </property>
           <property name="text">
            <string>Copy</string>
           </property>
@@ -260,8 +296,11 @@
     </item>
     <item row="8" column="0">
      <widget class="QCheckBox" name="checkBox_Log">
+      <property name="toolTip">
+       <string>Видимость истории действий</string>
+      </property>
       <property name="text">
-       <string>Show log</string>
+       <string>Показать историю уведомлений</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -274,6 +313,9 @@
        <layout class="QGridLayout" name="lay_QtLibs">
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButton_QtLibs">
+          <property name="toolTip">
+           <string>Открыть дилог выбора директории, для указания пути к библиотекам Qt</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -313,6 +355,9 @@
         </item>
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButton_QtPlugins">
+          <property name="toolTip">
+           <string>Открыть дилог выбора директории, для указания пути к дополнениям Qt</string>
+          </property>
           <property name="text">
            <string>...</string>
           </property>
@@ -339,15 +384,18 @@
       </item>
       <item row="2" column="1">
        <widget class="QPushButton" name="pushButton_UpdateTree">
+        <property name="toolTip">
+         <string>Обновляем дерево зависимостей</string>
+        </property>
         <property name="text">
-         <string>Update tree</string>
+         <string>Обновить дерево</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
        <widget class="QLabel" name="label_Dependency">
         <property name="text">
-         <string>Dependency tree </string>
+         <string>Дерево зависимостей</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -369,6 +417,9 @@
       </item>
       <item row="1" column="0" colspan="3">
        <widget class="QTreeWidget" name="treeWidget">
+        <property name="toolTip">
+         <string>Дерево модулей</string>
+        </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
         </property>
@@ -391,8 +442,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QCheckBox" name="envExec">
+        <property name="toolTip">
+         <string>Добавляем путь к библиотекам Qt, в переменные среды запускаемого приложения</string>
+        </property>
         <property name="text">
-         <string>Add the environment for executing</string>
+         <string>Добавить путь к QtLibs в переменные среды</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -414,8 +468,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_FindQt">
+        <property name="toolTip">
+         <string>Пытаемся найти директорию Qt в переменных среды, реестре ОС и истории установки.
+Если находим, заполняем поля QtLibs и QtPlugins.</string>
+        </property>
         <property name="text">
-         <string>Find Qt</string>
+         <string>Автопоиск Qt</string>
         </property>
        </widget>
       </item>

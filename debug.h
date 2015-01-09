@@ -11,7 +11,8 @@
 //Project
 #include "mainwindow.h"
 
-#define addLog(str) MainWindow::_addLog(Q_FUNC_INFO, str);
+#define addLog(message) MainWindow::_addLog(Q_FUNC_INFO, message)
+#define addLogErr(message) MainWindow::_addLog(Q_FUNC_INFO, message, c_warning)
 
 #endif // DEBUG
 

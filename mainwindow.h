@@ -23,6 +23,14 @@ namespace Ui {
 class MainWindow;
 }
 
+enum TypesMessage {
+    c_general,
+    c_debug,
+    c_warning,
+    c_critical,
+    c_fatal,
+};
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -48,24 +56,23 @@ private:
     QString m_QtLibs{};
     QString m_QtPlugins{};
     QProcess m_process;
-    
 
 public:
     explicit MainWindow(QWidget* parent = 0);
     ~MainWindow();
-    
+
     bool eventFilter(QObject* obj, QEvent* event);
     static QTableWidget* m_log;
-    
+
 private slots:
     void clearFields();
     void loadSettings();
     void setHWnd(qintptr hWnd);
     void setPID(qint64 PID);
-    void setExe(const QString& str);
-    void setCopyTo(const QString& str);
-    void setQtLibs(const QString& str);
-    void setQtPlugins(const QString& str);
+    void setExe(const QString& path);
+    void setCopyTo(const QString& path);
+    void setQtLibs(const QString& path);
+    void setQtPlugins(const QString& path);
     void processSelected(qint64 PID);
     void processStarted();
     void processFinished(int exitStatus);
@@ -89,7 +96,7 @@ private slots:
     void on_pushButton_CleanLog_clicked();
 
 public slots:
-    static void _addLog(const QString& fun, const QString& mes);
+    static void _addLog(const QString& fun, const QString& mes, TypesMessage type = c_general);
 
     // QWidget interface
 protected:

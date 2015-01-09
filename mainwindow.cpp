@@ -14,7 +14,7 @@
 #include "ui_mainwindow.h"
 #include "functions.h"
 
-//Определение виджета для вывода лога
+//Определение переменной, для вывода сообщений
 QTableWidget* MainWindow::m_log;
 
 MainWindow::MainWindow(QWidget* parent)
@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget* parent)
     ui->setupUi(this);
 
     //Титул приложения
-    setWindowTitle("DLLCollector_recode 1.1");
+    setWindowTitle("DLLCollector_recode 1.2");
 
     //Лог
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -95,70 +95,77 @@ void MainWindow::loadSettings()
 void MainWindow::setHWnd(qintptr hWnd)
 {
     if (hWnd > 0) {
-
-        addLog(trUtf8("HWnd window successfully received."))
-
-            m_hWnd = hWnd;
+        addLog(trUtf8("Дескриптор окна задан."));
+        m_hWnd = hWnd;
         ui->lineEdit_HWnd->setText(QString::number(m_hWnd, 16));
     } else {
-
-        addLog(trUtf8("HWnd not received."));
+        addLogErr(trUtf8("Дескриптор окна не задан."));
     }
 }
 
 void MainWindow::setPID(qint64 PID)
 {
     if (PID > 0) {
-        addLog(trUtf8("Process ID is successfully received."));
+        addLog(trUtf8("Идентификатор процесса задан."));
 
         m_PID = PID;
         ui->lineEdit_PID->setText(QString::number(PID));
 
         updateDependencyTree();
     } else {
-        addLog(trUtf8("Идентификатор процесса не получен. PID <= 0"));
+        addLogErr(trUtf8("Идентификатор процесса не задан."));
     }
 }
 
-void MainWindow::setExe(const QString& str)
+void MainWindow::setExe(const QString& path)
 {
-    if (!str.isEmpty()) {
-        addLog(trUtf8("File path is successfully received."));
-        m_exePath = QDir::toNativeSeparators(str);
+    if (!path.isEmpty()) {
+        addLog(trUtf8("Путь к исполняемому файлу задан."));
+
+        m_exePath = QDir::toNativeSeparators(path);
         ui->lineEdit_Exe->setText(m_exePath);
         setCopyTo(QFileInfo(m_exePath).absolutePath());
     } else {
-        addLog(trUtf8("Function getFilePathFromPID return false."));
+        addLogErr(trUtf8("Путь к исполняемому файлу не задан."));
     }
 }
 
-void MainWindow::setCopyTo(const QString& str)
+void MainWindow::setCopyTo(const QString& path)
 {
-    if (!str.isEmpty()) {
-        addLog(trUtf8("CopyTo path is successfully received."));
-        m_copyTo = QDir::toNativeSeparators(str);
+    if (!path.isEmpty()) {
+        addLog(trUtf8("Путь для копирования модулей задан."));
+
+        m_copyTo = QDir::toNativeSeparators(path);
         ui->lineEdit_CopyTo->setText(m_copyTo);
     } else {
-        addLog(trUtf8("Function getFilePathFromPID return false."));
+        addLogErr(trUtf8("Путь для копирования модулей не задан."));
     }
 }
 
-void MainWindow::setQtLibs(const QString& str)
+void MainWindow::setQtLibs(const QString& path)
 {
-    addLog(trUtf8("Qt Libs path is successfully received."));
+    if (!path.isEmpty()) {
+        addLog(trUtf8("Путь к библиотекам Qt задан."));
 
-    m_QtLibs = QDir::toNativeSeparators(str);
-    m_settings->setValue(KEY_QTLIBS, m_QtLibs);
-    ui->lineEdit_QtLibs->setText(m_QtLibs);
+        m_QtLibs = QDir::toNativeSeparators(path);
+        m_settings->setValue(KEY_QTLIBS, m_QtLibs);
+        ui->lineEdit_QtLibs->setText(m_QtLibs);
+    } else {
+        addLogErr(trUtf8("Путь к библиотекам Qt не задан."));
+    }
 }
 
-void MainWindow::setQtPlugins(const QString& str)
+void MainWindow::setQtPlugins(const QString& path)
 {
-    addLog(trUtf8("Qt Plugins path is successfully received."));
+    if (!path.isEmpty()) {
+        addLog(trUtf8("Путь к дополниниям Qt задан."));
 
-    m_QtPlugins = QDir::toNativeSeparators(str);
-    m_settings->setValue(KEY_QTPLUGINS, m_QtPlugins);
-    ui->lineEdit_QtPlugins->setText(m_QtPlugins);
+        m_QtPlugins = QDir::toNativeSeparators(path);
+        m_settings->setValue(KEY_QTPLUGINS, m_QtPlugins);
+        ui->lineEdit_QtPlugins->setText(m_QtPlugins);
+    } else {
+        addLogErr(trUtf8("Путь к дополниниям Qt не задан."));
+    }
 }
 
 void MainWindow::processSelected(qint64 PID)
@@ -170,8 +177,10 @@ void MainWindow::processSelected(qint64 PID)
 
 void MainWindow::processStarted()
 {
-    addLog(trUtf8("Process started."));
-    Sleep(500);
+    addLog(trUtf8("Процесс запущен!"));
+
+    Sleep(500); //Даём системе время, для обновления информации о процессе
+
     setPID(m_process.processId());
 }
 
@@ -179,7 +188,7 @@ void MainWindow::processFinished(int exitStatus)
 {
     Q_UNUSED(exitStatus)
 
-    addLog(trUtf8("Process finished."));
+    addLog(trUtf8("Процесс завершён!"));
 
     ui->lineEdit_HWnd->clear();
     ui->lineEdit_PID->clear();
@@ -189,19 +198,16 @@ void MainWindow::processFinished(int exitStatus)
 
 void MainWindow::processError()
 {
-    addLog(m_process.errorString());
+    addLogErr(trUtf8("Ошибка запуска процесса: ") + m_process.errorString());
 }
 
 void MainWindow::updateDependencyTree()
 {
-
     ui->treeWidget->clear();
     ui->treeWidget->setColumnCount(1);
 
-    if (m_PID > 0) {
-        addLog(trUtf8("Update dependency tree."));
-    } else {
-        addLog(trUtf8("Please select process or run it."));
+    if (m_PID <= 0) {
+        addLogErr(trUtf8("Сначала выберите процесс или запустите его!"));
         return;
     }
 
@@ -209,7 +215,7 @@ void MainWindow::updateDependencyTree()
     getModulesListFromProcessID(m_PID, tmpModuleList);
 
     if (tmpModuleList.isEmpty()) {
-        addLog(trUtf8("List of empty modules."));
+        addLogErr(trUtf8("Не удалось получить список модулей."));
         return;
     }
 
@@ -250,6 +256,8 @@ void MainWindow::updateDependencyTree()
     ui->treeWidget->addTopLevelItem(pluginsLibrary);
     ui->treeWidget->addTopLevelItem(systemLibrary);
     ui->treeWidget->addTopLevelItem(otherLibrary);
+
+    addLog(trUtf8("Дерево зависимостей обновлено."));
 }
 
 void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
@@ -284,9 +292,9 @@ void MainWindow::on_toolButton_PID_clicked()
 
 void MainWindow::on_toolButton_Exe_clicked()
 {
-    QString tmpPath = QFileDialog::getOpenFileName(this, trUtf8("Open Execute File"),
+    QString tmpPath = QFileDialog::getOpenFileName(this, trUtf8("Выбор исполняемого файла"),
                                                    "",
-                                                   trUtf8("Execute file (*.exe)"));
+                                                   trUtf8("Исполняемый файл (*.exe)"));
     if (!tmpPath.isEmpty()) {
         setExe(QDir::toNativeSeparators(tmpPath));
     }
@@ -309,22 +317,27 @@ void MainWindow::on_toolButton_Exec_clicked()
         m_process.start("\"" + m_exePath + "\"");
 
     } else {
-        addLog(trUtf8("Please select an executable file."));
+        addLogErr(trUtf8("Сначала выберите исполняемый файл!"));
     }
 }
 
 void MainWindow::on_toolButton_Kill_clicked()
 {
-    m_process.terminate();
+    if (m_process.isOpen()) {
+        addLog(trUtf8("Завершаем процесс."));
+        m_process.terminate();
+    } else {
+        addLogErr(trUtf8("Сначала запустите приложение!"));
+    }
 }
 
 void MainWindow::on_toolButton_SelectDirCopyTo_clicked()
 {
-    QString tmpCopy = QFileDialog::getExistingDirectory(this, trUtf8("Open Directory Copy"),
+    QString tmpCopy = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории"),
                                                         "",
                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!tmpCopy.isEmpty()) {
-        ui->lineEdit_CopyTo->setText(QDir::toNativeSeparators(tmpCopy));
+        setCopyTo(tmpCopy);
     }
 }
 
@@ -346,9 +359,8 @@ void MainWindow::on_toolButton_CopyTo_clicked()
         return file.copy(outFile);
     };
 
-    QString copyPath = ui->lineEdit_CopyTo->text();
-    QDir tmpDir(copyPath);
-    if (!copyPath.isEmpty() && tmpDir.exists()) {
+    QDir tmpDir(m_copyTo);
+    if (!m_copyTo.isEmpty() && tmpDir.exists()) {
         auto tree = ui->treeWidget;
 
         int topItemCount = tree->topLevelItemCount();
@@ -360,17 +372,17 @@ void MainWindow::on_toolButton_CopyTo_clicked()
                 auto childItem = topItem->child(nChildItem);
 
                 if (childItem->checkState(0) == Qt::Checked) {
-                    copyFile(childItem->text(0), copyPath, ItemTypes(nTopItem));
+                    copyFile(childItem->text(0), m_copyTo, ItemTypes(nTopItem));
                 }
             }
         }
     } else
-        addLog(trUtf8("Please select a folder!"));
+        addLogErr(trUtf8("Сначала выберите директорию!"));
 }
 
 void MainWindow::on_toolButton_QtLibs_clicked()
 {
-    QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Open Directory Qt Libs"),
+    QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с библиотеками Qt"),
                                                     "",
                                                     QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
@@ -380,7 +392,7 @@ void MainWindow::on_toolButton_QtLibs_clicked()
 
 void MainWindow::on_toolButton_QtPlugins_clicked()
 {
-    QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Open Directory Qt Plugins"),
+    QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с дополнениями Qt"),
                                                     "",
                                                     QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
@@ -398,14 +410,14 @@ void MainWindow::on_pushButton_FindQt_clicked()
     const QString QT_BIN = "bin";
     const QString QT_PLUGINS = "plugins";
 
-    addLog(trUtf8("Search Qt..."));
+    addLog(trUtf8("Ищем Qt..."));
     const QString qtDir = findPathQt();
     if (!qtDir.isEmpty()) {
-        addLog(trUtf8("Qt found!"));
+        addLog(trUtf8("Qt найден!"));
         setQtLibs(qtDir + QDir::separator() + QT_BIN);
         setQtPlugins(qtDir + QDir::separator() + QT_PLUGINS);
     } else {
-        addLog(trUtf8("Qt is not found."));
+        addLogErr(trUtf8("Qt не найден."));
     }
 }
 
@@ -421,12 +433,22 @@ void MainWindow::on_pushButton_CleanLog_clicked()
     table->setRowCount(0);
 }
 
-void MainWindow::_addLog(const QString& fun, const QString& mes)
+void MainWindow::_addLog(const QString& fun, const QString& mes, TypesMessage type)
 {
     if (m_log != nullptr) {
+        QColor color;
+        if (type == c_general) {
+            color = QColor("white");
+        } else {
+            color = QColor("PeachPuff");
+        }
+
         QTableWidgetItem* function = new QTableWidgetItem(fun);
+        function->setBackgroundColor(color);
+
         QTableWidgetItem* message = new QTableWidgetItem(mes);
-        
+        message->setBackgroundColor(color);
+
         int row = m_log->rowCount();
         m_log->setRowCount(row + 1);
         m_log->setItem(row, 0, function);
