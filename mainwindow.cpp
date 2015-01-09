@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget* parent)
 #else
     QString currentProcessType = trUtf8(" - 32-разрядная версия");
 #endif
-    setWindowTitle("DLLCollector_recode 1.0" + currentProcessType);
+    setWindowTitle("DLLCollector_recode 1.0.1" + currentProcessType);
 
     //Виджет уведомления
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
