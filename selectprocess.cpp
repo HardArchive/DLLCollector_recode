@@ -11,7 +11,6 @@
 #include "functions.h"
 #include "debug.h"
 
-
 SelectProcess::SelectProcess(QWidget* parent)
     : QDialog(parent)
     , ui(new Ui::SelectProcess)
@@ -22,7 +21,7 @@ SelectProcess::SelectProcess(QWidget* parent)
 
     ui->processList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     ui->processList->horizontalHeader()->resizeSection(1, 70);
-    
+
     updateProcessList();
 }
 
@@ -50,7 +49,7 @@ void SelectProcess::updateProcessList()
             table->setItem(row, 1, pid);
         }
     } else {
-        addLog(trUtf8("Function getProcessList return 0."));
+        addLogErr(trUtf8("Не удалось получить список процессов."));
     }
 }
 
@@ -76,7 +75,7 @@ void SelectProcess::on_pushButton_Ok_clicked()
         emit processSelected(m_PID);
         close();
     } else {
-        addLog(trUtf8("Please first select process!"));
-        QMessageBox::information(this, tr("Information"), trUtf8("Please first select the process!"));
+        addLogErr(trUtf8("Сначала выберите процесс или отмените выбор!"));
+        QMessageBox::information(this, trUtf8("Информация"), trUtf8("Сначала выберите процесс или отмените выбор!"));
     }
 }

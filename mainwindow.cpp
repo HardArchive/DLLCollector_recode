@@ -219,18 +219,19 @@ void MainWindow::updateDependencyTree()
         return;
     }
 
-    auto makeItem = [](const QString& name, Qt::CheckState state) {
+    auto makeItem = [](const QString& text, Qt::CheckState state) {
         QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setText(0, name);
+        item->setText(0, text);
+        item->setToolTip(0, text);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setCheckState(0, state);
         return item;
     };
 
-    QTreeWidgetItem* mainLibrary = makeItem(trUtf8("Main Library"), Qt::Checked);
-    QTreeWidgetItem* pluginsLibrary = makeItem(trUtf8("Plugins Library"), Qt::Checked);
-    QTreeWidgetItem* systemLibrary = makeItem(trUtf8("System Library"), Qt::Unchecked);
-    QTreeWidgetItem* otherLibrary = makeItem(trUtf8("Other Library"), Qt::Unchecked);
+    QTreeWidgetItem* mainLibrary = makeItem(trUtf8("Основные модули Qt"), Qt::Checked);
+    QTreeWidgetItem* pluginsLibrary = makeItem(trUtf8("Дополнения Qt"), Qt::Checked);
+    QTreeWidgetItem* systemLibrary = makeItem(trUtf8("Системные библиотеки"), Qt::Unchecked);
+    QTreeWidgetItem* otherLibrary = makeItem(trUtf8("Остальные библиотеки"), Qt::Unchecked);
 
     const QString LIBS = m_QtLibs;
     const QString PLUGINS = m_QtPlugins;
@@ -444,9 +445,11 @@ void MainWindow::_addLog(const QString& fun, const QString& mes, TypesMessage ty
         }
 
         QTableWidgetItem* function = new QTableWidgetItem(fun);
+        function->setToolTip(fun);
         function->setBackgroundColor(color);
 
         QTableWidgetItem* message = new QTableWidgetItem(mes);
+        message->setToolTip(mes);
         message->setBackgroundColor(color);
 
         int row = m_log->rowCount();

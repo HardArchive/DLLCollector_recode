@@ -14,11 +14,14 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select process</string>
+   <string>Выбор процесса</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
     <widget class="QPushButton" name="pushButton_Update">
+     <property name="toolTip">
+      <string>Обновить список процессов</string>
+     </property>
      <property name="text">
       <string>Обновить</string>
      </property>
@@ -26,6 +29,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QPushButton" name="pushButton_Ok">
+     <property name="toolTip">
+      <string>Завершить выбор процесса</string>
+     </property>
      <property name="text">
       <string>Ок</string>
      </property>
@@ -33,6 +39,9 @@
    </item>
    <item row="1" column="2">
     <widget class="QPushButton" name="pushButton_Cancel">
+     <property name="toolTip">
+      <string>Отменить выбор процесса</string>
+     </property>
      <property name="text">
       <string>Отмена</string>
      </property>
@@ -40,6 +49,9 @@
    </item>
    <item row="0" column="0" colspan="3">
     <widget class="QTableWidget" name="processList">
+     <property name="toolTip">
+      <string>Список процессов</string>
+     </property>
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
@@ -63,7 +75,7 @@
      </attribute>
      <column>
       <property name="text">
-       <string>Name process</string>
+       <string>Имя процесса</string>
       </property>
      </column>
      <column>
