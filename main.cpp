@@ -28,8 +28,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QS
 
     auto makeMessage = [&](const QString& prefix) {
         cerr << formatedMessage.arg(prefix) << endl;
-        if(local != nullptr)
-            local->addLog(prefix + ": " + msg);
+        local->addLog(context.function, msg);
     };
 
     switch (type) {

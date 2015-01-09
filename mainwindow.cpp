@@ -6,7 +6,6 @@
 #include <QtWidgets>
 #include <QProcess>
 #include <QSettings>
-#include <QDebug>
 #include <QFileInfo>
 #include <QDir>
 
@@ -23,6 +22,11 @@ MainWindow::MainWindow(QWidget* parent)
     
     //Титул приложения
     setWindowTitle("DLLCollector_recode 1.1");
+
+    //Лог
+    ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->tableWidget_Log->horizontalHeader()->resizeSection(0, 200);
+    logWork = true;
     
     //Для работы с параметрами
     m_settings = new QSettings("free", "DLLCollector_recode", this);
@@ -48,6 +52,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
+    logWork = false;
     delete ui;
 }
 
@@ -87,45 +92,58 @@ void MainWindow::loadSettings()
 void MainWindow::setHWnd(int hWnd)
 {
     if (hWnd > 0) {
-        qDebug() << tr("Handle window is successfully received.");
+
+        _debug << trUtf8("HWnd window successfully received.");
 
         m_hWnd = hWnd;
         ui->lineEdit_HWnd->setText(QString::number(m_hWnd, 16));
     } else {
 
-        qWarning() << tr("Function getHWindowFromPoint return false.");
+        _debug << trUtf8("HWnd not received.") << "hWnd <= 0";
     }
 }
 
-void MainWindow::setPID(qint64 PID)
+void MainWindow::setPID(int PID)
 {
     if (PID > 0) {
-        qDebug() << tr("Process ID is successfully received.");
+        _debug << trUtf8("Process ID is successfully received.");
 
         m_PID = PID;
         ui->lineEdit_PID->setText(QString::number(PID));
 
         updateDependencyTree();
     } else {
-        qWarning() << tr("Function getPIDFromHWND return false.");
+        _debug << trUtf8("Идентификатор процесса не получен. PID <= 0");
     }
 }
 
 void MainWindow::setExe(const QString& str)
 {
     if (!str.isEmpty()) {
-        qDebug() << tr("File path is successfully received.");
+
+        _debug << trUtf8("File path is successfully received.");
         m_exePath = QDir::toNativeSeparators(str);
         ui->lineEdit_Exe->setText(m_exePath);
         ui->lineEdit_CopyTo->setText(QDir::toNativeSeparators(QFileInfo(m_exePath).absolutePath()));
     } else {
-        qWarning() << tr("Function getFilePathFromPID return false.");
+        _warning << trUtf8("Function getFilePathFromPID return false.");
+    }
+}
+
+void MainWindow::seCopyTo(const QString& str)
+{
+    if (!str.isEmpty()) {
+        _debug << trUtf8("Copy to path is successfully received.");
+        m_copyTo = QDir::toNativeSeparators(str);
+        ui->lineEdit_CopyTo->setText(m_copyTo);
+    } else {
+        _warning << trUtf8("Function getFilePathFromPID return false.");
     }
 }
 
 void MainWindow::setQtLibs(const QString& str)
 {
-    qDebug() << tr("Qt Libs path is successfully received.");
+    _debug << trUtf8("Qt Libs path is successfully received.");
 
     m_QtLibs = QDir::toNativeSeparators(str);
     m_settings->setValue(KEY_QTLIBS, m_QtLibs);
@@ -134,14 +152,14 @@ void MainWindow::setQtLibs(const QString& str)
 
 void MainWindow::setQtPlugins(const QString& str)
 {
-    qDebug() << tr("Qt Plugins path is successfully received.");
+    _debug << trUtf8("Qt Plugins path is successfully received.");
 
     m_QtPlugins = QDir::toNativeSeparators(str);
     m_settings->setValue(KEY_QTPLUGINS, m_QtPlugins);
     ui->lineEdit_QtPlugins->setText(m_QtPlugins);
 }
 
-void MainWindow::processSelected(qint64 PID)
+void MainWindow::processSelected(int PID)
 {
     clearFields();
     setPID(PID);
@@ -150,7 +168,7 @@ void MainWindow::processSelected(qint64 PID)
 
 void MainWindow::processStarted()
 {
-    qDebug() << tr("Process started.");
+    _debug << trUtf8("Process started.");
     Sleep(500);
     setPID(m_process.processId());
 }
@@ -159,7 +177,7 @@ void MainWindow::processFinished(int exitStatus)
 {
     Q_UNUSED(exitStatus)
 
-    qDebug() << tr("Process finished.");
+    _debug << trUtf8("Process finished.");
 
     ui->lineEdit_HWnd->clear();
     ui->lineEdit_PID->clear();
@@ -169,7 +187,7 @@ void MainWindow::processFinished(int exitStatus)
 
 void MainWindow::processError()
 {
-    qDebug() << m_process.errorString();
+    _debug << m_process.errorString();
 }
 
 void MainWindow::updateDependencyTree()
@@ -179,9 +197,9 @@ void MainWindow::updateDependencyTree()
     ui->treeWidget->setColumnCount(1);
 
     if (m_PID > 0) {
-        qDebug() << tr("Update dependency tree.");
+        _debug << trUtf8("Update dependency tree.");
     } else {
-        qDebug() << tr("Please select process or run it.");
+        _debug << trUtf8("Please select process or run it.");
         return;
     }
 
@@ -189,7 +207,7 @@ void MainWindow::updateDependencyTree()
     getModulesListFromProcessID(m_PID, tmpModuleList);
 
     if (tmpModuleList.isEmpty()) {
-        qDebug() << tr("List of empty modules.");
+        _debug << trUtf8("List of empty modules.");
         return;
     }
 
@@ -201,10 +219,10 @@ void MainWindow::updateDependencyTree()
         return item;
     };
 
-    QTreeWidgetItem* mainLibrary = makeItem(tr("Main Library"), Qt::Checked);
-    QTreeWidgetItem* pluginsLibrary = makeItem(tr("Plugins Library"), Qt::Checked);
-    QTreeWidgetItem* systemLibrary = makeItem(tr("System Library"), Qt::Unchecked);
-    QTreeWidgetItem* otherLibrary = makeItem(tr("Other Library"), Qt::Unchecked);
+    QTreeWidgetItem* mainLibrary = makeItem(trUtf8("Main Library"), Qt::Checked);
+    QTreeWidgetItem* pluginsLibrary = makeItem(trUtf8("Plugins Library"), Qt::Checked);
+    QTreeWidgetItem* systemLibrary = makeItem(trUtf8("System Library"), Qt::Unchecked);
+    QTreeWidgetItem* otherLibrary = makeItem(trUtf8("Other Library"), Qt::Unchecked);
 
     const QString LIBS = m_QtLibs;
     const QString PLUGINS = m_QtPlugins;
@@ -264,9 +282,9 @@ void MainWindow::on_toolButton_PID_clicked()
 
 void MainWindow::on_toolButton_Exe_clicked()
 {
-    QString tmpPath = QFileDialog::getOpenFileName(this, tr("Open Execute File"),
+    QString tmpPath = QFileDialog::getOpenFileName(this, trUtf8("Open Execute File"),
                                                    "",
-                                                   tr("Execute file (*.exe)"));
+                                                   trUtf8("Execute file (*.exe)"));
     if (!tmpPath.isEmpty()) {
         setExe(QDir::toNativeSeparators(tmpPath));
     }
@@ -289,7 +307,7 @@ void MainWindow::on_toolButton_Exec_clicked()
         m_process.start("\"" + m_exePath + "\"");
 
     } else {
-        qDebug() << tr("Please select an executable file.");
+        _debug << trUtf8("Please select an executable file.");
     }
 }
 
@@ -300,7 +318,7 @@ void MainWindow::on_toolButton_Kill_clicked()
 
 void MainWindow::on_toolButton_SelectDirCopyTo_clicked()
 {
-    QString tmpCopy = QFileDialog::getExistingDirectory(this, tr("Open Directory Copy"),
+    QString tmpCopy = QFileDialog::getExistingDirectory(this, trUtf8("Open Directory Copy"),
                                                         "",
                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!tmpCopy.isEmpty()) {
@@ -345,12 +363,12 @@ void MainWindow::on_toolButton_CopyTo_clicked()
             }
         }
     } else
-        qDebug() << tr("Please select a folder!");
+        _debug << trUtf8("Please select a folder!");
 }
 
 void MainWindow::on_toolButton_QtLibs_clicked()
 {
-    QString tmp = QFileDialog::getExistingDirectory(this, tr("Open Directory Qt Libs"),
+    QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Open Directory Qt Libs"),
                                                     "",
                                                     QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
@@ -360,7 +378,7 @@ void MainWindow::on_toolButton_QtLibs_clicked()
 
 void MainWindow::on_toolButton_QtPlugins_clicked()
 {
-    QString tmp = QFileDialog::getExistingDirectory(this, tr("Open Directory Qt Plugins"),
+    QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Open Directory Qt Plugins"),
                                                     "",
                                                     QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
@@ -378,14 +396,14 @@ void MainWindow::on_pushButton_FindQt_clicked()
     const QString QT_BIN = "bin";
     const QString QT_PLUGINS = "plugins";
 
-    qDebug() << tr("Search Qt...");
+    _debug << trUtf8("Search Qt...");
     const QString qtDir = findPathQt();
     if (!qtDir.isEmpty()) {
-        qDebug() << tr("Qt found!");
+        _debug << trUtf8("Qt found!");
         setQtLibs(qtDir + QDir::separator() + QT_BIN);
         setQtPlugins(qtDir + QDir::separator() + QT_PLUGINS);
     } else {
-        qDebug() << tr("Qt is not found.");
+        _debug << trUtf8("Qt is not found.");
     }
 }
 
@@ -396,12 +414,26 @@ void MainWindow::on_pushButton_UpdateTree_clicked()
 
 void MainWindow::on_pushButton_CleanLog_clicked()
 {
-    ui->listWidget_Log->clear();
+    auto table = ui->tableWidget_Log;
+    table->clearContents();
+    table->setRowCount(0);
 }
 
-void MainWindow::addLog(const QString& str)
+void MainWindow::addLog(const QString& fun, const QString& mes)
 {
-    ui->listWidget_Log->insertItem(0, str);
+    if (logWork) {
+        auto table = ui->tableWidget_Log;
+
+        QTableWidgetItem* function = new QTableWidgetItem(fun);
+        QTableWidgetItem* message = new QTableWidgetItem(mes);
+
+        int row = table->rowCount();
+        table->setRowCount(row + 1);
+        table->setItem(row, 0, function);
+        table->setItem(row, 1, message);
+
+        table->scrollToBottom();
+    }
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent* event)

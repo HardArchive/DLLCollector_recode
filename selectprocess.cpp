@@ -3,13 +3,14 @@
 //Native
 
 //Qt
-#include <QDebug>
 #include <QMessageBox>
 
 //Project
 #include "selectprocess.h"
 #include "ui_selectprocess.h"
 #include "functions.h"
+#include "debug.h"
+
 
 SelectProcess::SelectProcess(QWidget* parent)
     : QDialog(parent)
@@ -47,8 +48,9 @@ void SelectProcess::updateProcessList()
             table->setItem(row, 0, name);
             table->setItem(row, 1, pid);
         }
-    } else
-        qWarning() << tr("Function getProcessList return 0.");
+    } else {
+        _warning << tr("Function getProcessList return 0.");
+    }
 }
 
 void SelectProcess::on_pushButton_Update_clicked()
@@ -73,7 +75,7 @@ void SelectProcess::on_pushButton_Ok_clicked()
         emit processSelected(m_PID);
         close();
     } else {
-        qDebug() << tr("Please first select process!");
+        _debug << tr("Please first select process!");
         QMessageBox::information(this, tr("Information"), tr("Please first select the process!"));
     }
 }

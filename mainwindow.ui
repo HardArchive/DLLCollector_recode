@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
-    <height>471</height>
+    <width>533</width>
+    <height>521</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -23,7 +23,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>100</height>
+        <height>150</height>
        </size>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -51,13 +51,6 @@
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="3">
-          <widget class="QListWidget" name="listWidget_Log">
-           <property name="editTriggers">
-            <set>QAbstractItemView::NoEditTriggers</set>
            </property>
           </widget>
          </item>
@@ -93,6 +86,41 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="1" column="0" colspan="3">
+          <widget class="QTableWidget" name="tableWidget_Log">
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <attribute name="horizontalHeaderCascadingSectionResizes">
+            <bool>true</bool>
+           </attribute>
+           <attribute name="horizontalHeaderHighlightSections">
+            <bool>false</bool>
+           </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>true</bool>
+           </attribute>
+           <attribute name="verticalHeaderHighlightSections">
+            <bool>false</bool>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Function</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Message</string>
+            </property>
+           </column>
+          </widget>
          </item>
         </layout>
        </item>
@@ -234,6 +262,9 @@
      <widget class="QCheckBox" name="checkBox_Log">
       <property name="text">
        <string>Show log</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>

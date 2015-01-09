@@ -16,6 +16,7 @@ QT_END_NAMESPACE
 
 //Project
 #include "selectprocess.h"
+#include "debug.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,12 +34,7 @@ private:
     };
     const QString KEY_QTLIBS = "QtLibs";
     const QString KEY_QTPLUGINS = "QtPlugins";
-
-public:
-    explicit MainWindow(QWidget* parent = 0);
-    ~MainWindow();
-    bool eventFilter(QObject* obj, QEvent* event);
-
+    
     //Private variables
 private:
     Ui::MainWindow* ui;
@@ -46,25 +42,33 @@ private:
     int m_hWnd{};
     qint64 m_PID{};
     QString m_exePath{};
+    QString m_copyTo{};
     QString m_windowsDir{};
     QString m_QtLibs{};
     QString m_QtPlugins{};
     QProcess m_process;
+    bool logWork;
+
+public:
+    explicit MainWindow(QWidget* parent = 0);
+    ~MainWindow();
+    bool eventFilter(QObject* obj, QEvent* event);
 
 private slots:
     void clearFields();
     void loadSettings();
     void setHWnd(int hWnd);
-    void setPID(qint64 PID);
+    void setPID(int PID);
     void setExe(const QString& str);
+    void seCopyTo(const QString& str);
     void setQtLibs(const QString& str);
     void setQtPlugins(const QString& str);
-    void processSelected(qint64 PID);
+    void processSelected(int PID);
     void processStarted();
     void processFinished(int exitStatus);
     void processError();
     void updateDependencyTree();
-    
+
     void on_treeWidget_itemChanged(QTreeWidgetItem* item, int column);
     void do_toolButton_HWnd_release();
     void on_toolButton_HWnd_pressed();
@@ -80,9 +84,9 @@ private slots:
     void on_pushButton_FindQt_clicked();
     void on_pushButton_UpdateTree_clicked();
     void on_pushButton_CleanLog_clicked();
-    
+
 public slots:
-    void addLog(const QString& str);
+    void addLog(const QString& fun, const QString& mes);
 
     // QWidget interface
 protected:
