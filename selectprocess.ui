@@ -64,9 +64,6 @@
      <attribute name="horizontalHeaderHighlightSections">
       <bool>false</bool>
      </attribute>
-     <attribute name="verticalHeaderDefaultSectionSize">
-      <number>19</number>
-     </attribute>
      <attribute name="verticalHeaderHighlightSections">
       <bool>false</bool>
      </attribute>
