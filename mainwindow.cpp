@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget* parent)
     //Лог
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableWidget_Log->horizontalHeader()->resizeSection(0, 200);
-    logWork = true;
+    m_logWork = true;
     
     //Для работы с параметрами
     m_settings = new QSettings("free", "DLLCollector_recode", this);
@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
-    logWork = false;
+    m_logWork = false;
     delete ui;
 }
 
@@ -89,7 +89,7 @@ void MainWindow::loadSettings()
     ui->lineEdit_QtPlugins->setText(m_QtPlugins);
 }
 
-void MainWindow::setHWnd(int hWnd)
+void MainWindow::setHWnd(qintptr hWnd)
 {
     if (hWnd > 0) {
 
@@ -103,7 +103,7 @@ void MainWindow::setHWnd(int hWnd)
     }
 }
 
-void MainWindow::setPID(int PID)
+void MainWindow::setPID(qint64 PID)
 {
     if (PID > 0) {
         _debug << trUtf8("Process ID is successfully received.");
@@ -159,7 +159,7 @@ void MainWindow::setQtPlugins(const QString& str)
     ui->lineEdit_QtPlugins->setText(m_QtPlugins);
 }
 
-void MainWindow::processSelected(int PID)
+void MainWindow::processSelected(qint64 PID)
 {
     clearFields();
     setPID(PID);
@@ -421,7 +421,7 @@ void MainWindow::on_pushButton_CleanLog_clicked()
 
 void MainWindow::addLog(const QString& fun, const QString& mes)
 {
-    if (logWork) {
+    if (m_logWork) {
         auto table = ui->tableWidget_Log;
 
         QTableWidgetItem* function = new QTableWidgetItem(fun);

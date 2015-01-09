@@ -20,8 +20,8 @@ bool isSubPath(const QString& dir, const QString& path);
 bool getModulesListFromProcessID(int PID, QList<QString>& modules);
 bool getProcessList(QList<ProcessInfo>& list);
 QString getFilePathFromPID(int PID);
-int getPIDFromHWND(int hWnd);
-int getHWindowFromPoint(const QPoint& point);
+qint64 getPIDFromHWND(qintptr hWnd);
+qintptr getHWindowFromPoint(const QPoint& point);
 QString findPathQt();
 
 #endif // FUNCTIONS_H

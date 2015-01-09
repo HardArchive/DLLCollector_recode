@@ -92,7 +92,7 @@ QString getFilePathFromPID(int PID)
     return QString::fromWCharArray(bufPath);
 }
 
-int getPIDFromHWND(int hWnd)
+qint64 getPIDFromHWND(qintptr hWnd)
 {
     DWORD tmpPID{};
     GetWindowThreadProcessId(reinterpret_cast<HWND>(hWnd), &tmpPID);
@@ -100,12 +100,12 @@ int getPIDFromHWND(int hWnd)
     return tmpPID;
 }
 
-int getHWindowFromPoint(const QPoint& point)
+qintptr getHWindowFromPoint(const QPoint& point)
 {
     POINT tmpPoint = { point.x(), point.y() };
     HWND tmpHWnd = WindowFromPoint(tmpPoint);
 
-    return reinterpret_cast<int>(tmpHWnd);
+    return reinterpret_cast<qintptr>(tmpHWnd);
 }
 
 QString getWinDir()

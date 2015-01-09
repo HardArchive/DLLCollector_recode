@@ -39,7 +39,7 @@ private:
 private:
     Ui::MainWindow* ui;
     QSettings* m_settings;
-    int m_hWnd{};
+    qintptr m_hWnd{};
     qint64 m_PID{};
     QString m_exePath{};
     QString m_copyTo{};
@@ -47,7 +47,7 @@ private:
     QString m_QtLibs{};
     QString m_QtPlugins{};
     QProcess m_process;
-    bool logWork;
+    bool m_logWork;
 
 public:
     explicit MainWindow(QWidget* parent = 0);
@@ -57,13 +57,13 @@ public:
 private slots:
     void clearFields();
     void loadSettings();
-    void setHWnd(int hWnd);
-    void setPID(int PID);
+    void setHWnd(qintptr hWnd);
+    void setPID(qint64 PID);
     void setExe(const QString& str);
     void seCopyTo(const QString& str);
     void setQtLibs(const QString& str);
     void setQtPlugins(const QString& str);
-    void processSelected(int PID);
+    void processSelected(qint64 PID);
     void processStarted();
     void processFinished(int exitStatus);
     void processError();
