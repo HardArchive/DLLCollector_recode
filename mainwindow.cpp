@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget* parent)
 #else
     QString currentProcessType = trUtf8(" - 32-разрядная версия");
 #endif
-    setWindowTitle("DLLCollector_recode 1.0.1" + currentProcessType);
+    setWindowTitle("DLLCollector_recode 1.0.2_dev" + currentProcessType);
 
     //Виджет уведомления
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget* parent)
     m_log = ui->tableWidget_Log;
 
     //Для работы с параметрами
-    m_settings = new QSettings("free", "DLLCollector_recode", this);
+    m_settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "DLLCollector_recode", "settings", this);
 
     //Загрузка параметров
     loadSettings();
