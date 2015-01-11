@@ -117,7 +117,7 @@ QString findPathQt()
 {
     //Ищем в параметрах среды
     const wchar_t* QT_CORE_FILE = L"Qt5Core.dll";
-    DWORD nBufferLength = 255;
+    const DWORD nBufferLength = 255;
     wchar_t lpBuffer[nBufferLength];
     bool findEnv = SearchPath(NULL,
                               QT_CORE_FILE,
