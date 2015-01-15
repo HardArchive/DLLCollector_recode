@@ -194,7 +194,9 @@ void MainWindow::processFinished(int exitStatus)
     Q_UNUSED(exitStatus)
 
     addLog(trUtf8("Процесс завершён!"));
-
+    
+    m_process.close();
+    
     ui->lineEdit_HWnd->clear();
     ui->lineEdit_PID->clear();
     m_hWnd = 0;
