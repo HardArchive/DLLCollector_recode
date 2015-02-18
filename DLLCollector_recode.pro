@@ -16,7 +16,10 @@ contains(QT_ARCH, x86_64) {
 }
 
 TEMPLATE = app
-CONFIG += C++14
+CONFIG += C++11
+
+#Для vsc2013, functions.cpp -> #include <windows.h>
+DEFINES += NOMINMAX
 
 LIBS+= -lpsapi
 

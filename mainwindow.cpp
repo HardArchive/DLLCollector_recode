@@ -22,14 +22,14 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    
+
 //Титул приложения
 #ifdef Q_OS_WIN64
-    QString currentProcessType = trUtf8(" - 64-разрядная версия");
+    const QString currentProcessType = trUtf8(" - 64-разрядная версия");
 #else
-    QString currentProcessType = trUtf8(" - 32-разрядная версия");
+    const QString currentProcessType = trUtf8(" - 32-разрядная версия");
 #endif
-    setWindowTitle("DLLCollector_recode 1.0.2_dev" + currentProcessType);
+    setWindowTitle("DLLCollector_recode 1.0.3_dev" + currentProcessType);
 
     //Виджет уведомления
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
@@ -115,7 +115,7 @@ void MainWindow::setPID(qint64 PID)
 
         m_PID = PID;
         ui->lineEdit_PID->setText(QString::number(PID));
-
+        
         updateDependencyTree();
     } else {
         addLogErr(trUtf8("Идентификатор процесса не задан."));
@@ -194,9 +194,9 @@ void MainWindow::processFinished(int exitStatus)
     Q_UNUSED(exitStatus)
 
     addLog(trUtf8("Процесс завершён!"));
-    
+
     m_process.close();
-    
+
     ui->lineEdit_HWnd->clear();
     ui->lineEdit_PID->clear();
     m_hWnd = 0;
