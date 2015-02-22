@@ -47,7 +47,7 @@
          <item row="0" column="1">
           <widget class="QLabel" name="label_Log">
            <property name="text">
-            <string>История уведомлений</string>
+            <string>История действий</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -70,7 +70,7 @@
          <item row="2" column="1">
           <widget class="QPushButton" name="pushButton_CleanLog">
            <property name="toolTip">
-            <string>Очищаем историю уведомлений</string>
+            <string>Очищаем историю действий</string>
            </property>
            <property name="text">
             <string>Очистить</string>
@@ -93,7 +93,7 @@
          <item row="1" column="0" colspan="3">
           <widget class="QTableWidget" name="tableWidget_Log">
            <property name="toolTip">
-            <string>История уведомлений</string>
+            <string>История действий</string>
            </property>
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
@@ -256,7 +256,7 @@
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButton_SelectDirCopyTo">
           <property name="toolTip">
-           <string>Открыть дилог выбора директории, в которую будет произведено копирование модулей</string>
+           <string>Открыть дилог выбора директории, в которую будет произведено копирование библиотек</string>
           </property>
           <property name="text">
            <string>...</string>
@@ -297,7 +297,7 @@
        <string>Видимость истории действий</string>
       </property>
       <property name="text">
-       <string>Показать историю уведомлений</string>
+       <string>Показать историю действий</string>
       </property>
       <property name="checked">
        <bool>true</bool>
@@ -353,7 +353,7 @@
         <item row="0" column="2">
          <widget class="QToolButton" name="toolButton_QtPlugins">
           <property name="toolTip">
-           <string>Открыть дилог выбора директории, для указания пути к дополнениям Qt</string>
+           <string>Открыть дилог выбора директории, для указания пути к плагинам Qt</string>
           </property>
           <property name="text">
            <string>...</string>
@@ -415,7 +415,7 @@
       <item row="1" column="0" colspan="3">
        <widget class="QTreeWidget" name="treeWidget">
         <property name="toolTip">
-         <string>Дерево модулей</string>
+         <string>Дерево зависимостей</string>
         </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>

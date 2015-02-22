@@ -17,6 +17,10 @@ class SelectProcess;
 class SelectProcess : public QDialog {
     Q_OBJECT
 
+private:
+    Ui::SelectProcess* ui;
+    qint64 m_PID = -1;
+
 public:
     explicit SelectProcess(QWidget* parent = 0);
     ~SelectProcess();
@@ -29,10 +33,6 @@ private slots:
     void on_pushButton_Update_clicked();
     void on_processList_itemSelectionChanged();
     void on_pushButton_Ok_clicked();
-
-private:
-    Ui::SelectProcess* ui;
-    qint64 m_PID = -1;
 
 private:
     void updateProcessList();

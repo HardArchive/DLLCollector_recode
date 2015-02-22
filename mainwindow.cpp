@@ -100,76 +100,76 @@ void MainWindow::loadSettings()
 void MainWindow::setHWnd(qintptr hWnd)
 {
     if (hWnd > 0) {
-        addLog(trUtf8("Дескриптор окна задан."));
+        addLog(trUtf8("Дескриптор окна - задан."));
         m_hWnd = hWnd;
         ui->lineEdit_HWnd->setText(QString::number(m_hWnd, 16));
     } else {
-        addLogErr(trUtf8("Дескриптор окна не задан."));
+        addLogErr(trUtf8("Дескриптор окна - не задан."));
     }
 }
 
 void MainWindow::setPID(qint64 PID)
 {
     if (PID > 0) {
-        addLog(trUtf8("Идентификатор процесса задан."));
+        addLog(trUtf8("Идентификатор процесса - задан."));
 
         m_PID = PID;
         ui->lineEdit_PID->setText(QString::number(PID));
 
         updateDependencyTree();
     } else {
-        addLogErr(trUtf8("Идентификатор процесса не задан."));
+        addLogErr(trUtf8("Идентификатор процесса - не задан."));
     }
 }
 
 void MainWindow::setExe(const QString& path)
 {
     if (!path.isEmpty()) {
-        addLog(trUtf8("Путь к исполняемому файлу задан."));
+        addLog(trUtf8("Путь к исполняемому файлу - задан."));
 
         m_exePath = QDir::toNativeSeparators(path);
         ui->lineEdit_Exe->setText(m_exePath);
         setCopyTo(QFileInfo(m_exePath).absolutePath());
     } else {
-        addLogErr(trUtf8("Путь к исполняемому файлу не задан."));
+        addLogErr(trUtf8("Путь к исполняемому файлу - не задан."));
     }
 }
 
 void MainWindow::setCopyTo(const QString& path)
 {
     if (!path.isEmpty()) {
-        addLog(trUtf8("Путь для копирования модулей задан."));
+        addLog(trUtf8("Путь назначения для копирования библиотек - задан!"));
 
         m_copyTo = QDir::toNativeSeparators(path);
         ui->lineEdit_CopyTo->setText(m_copyTo);
     } else {
-        addLogErr(trUtf8("Путь для копирования модулей не задан."));
+        addLogErr(trUtf8("Путь назначения для копирования библиотек - не задан!"));
     }
 }
 
 void MainWindow::setQtLibs(const QString& path)
 {
     if (!path.isEmpty()) {
-        addLog(trUtf8("Путь к библиотекам Qt задан."));
+        addLog(trUtf8("Путь к библиотекам Qt - задан."));
 
         m_QtLibs = QDir::toNativeSeparators(path);
         m_settings->setValue(KEY_QTLIBS, m_QtLibs);
         ui->lineEdit_QtLibs->setText(m_QtLibs);
     } else {
-        addLogErr(trUtf8("Путь к библиотекам Qt не задан."));
+        addLogErr(trUtf8("Путь к библиотекам Qt - не задан."));
     }
 }
 
 void MainWindow::setQtPlugins(const QString& path)
 {
     if (!path.isEmpty()) {
-        addLog(trUtf8("Путь к дополниниям Qt задан."));
+        addLog(trUtf8("Путь к дополниниям Qt - задан."));
 
         m_QtPlugins = QDir::toNativeSeparators(path);
         m_settings->setValue(KEY_QTPLUGINS, m_QtPlugins);
         ui->lineEdit_QtPlugins->setText(m_QtPlugins);
     } else {
-        addLogErr(trUtf8("Путь к дополниниям Qt не задан."));
+        addLogErr(trUtf8("Путь к дополниниям Qt - не задан."));
     }
 }
 
@@ -221,7 +221,7 @@ void MainWindow::updateDependencyTree()
     getModulesListFromProcessID(m_PID, tmpModuleList);
 
     if (tmpModuleList.isEmpty()) {
-        addLogErr(trUtf8("Не удалось получить список модулей."));
+        addLogErr(trUtf8("Не удалось получить список библиотек."));
         return;
     }
 
@@ -234,8 +234,8 @@ void MainWindow::updateDependencyTree()
         return item;
     };
 
-    QTreeWidgetItem* mainLibrary = makeItem(trUtf8("Основные модули Qt"), Qt::Checked);
-    QTreeWidgetItem* pluginsLibrary = makeItem(trUtf8("Дополнения Qt"), Qt::Checked);
+    QTreeWidgetItem* mainLibrary = makeItem(trUtf8("Основные библиотеки Qt"), Qt::Checked);
+    QTreeWidgetItem* pluginsLibrary = makeItem(trUtf8("Плагины Qt"), Qt::Checked);
     QTreeWidgetItem* systemLibrary = makeItem(trUtf8("Системные библиотеки"), Qt::Unchecked);
     QTreeWidgetItem* otherLibrary = makeItem(trUtf8("Остальные библиотеки"), Qt::Unchecked);
 
@@ -267,10 +267,9 @@ void MainWindow::updateDependencyTree()
     addLog(trUtf8("Дерево зависимостей обновлено."));
 }
 
+// Реализация выбора элементов в дереве зависимостей
 void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
 {
-    //!!! Реализация выбора элементов в дереве зависимостей
-
     // Блокируем сигналы дерева зависимостей (treeWidget),
     // дабы избежать рекурсии при ручном управлении состоянием элементов.
     ui->treeWidget->blockSignals(true);
@@ -380,7 +379,7 @@ void MainWindow::on_toolButton_SelectDirCopyTo_clicked()
 
 void MainWindow::on_toolButton_CopyTo_clicked()
 {
-    auto copyFile = [&](const QString& filePath, const QString& outDir, ItemTypes types) {
+    auto copyFile = [this](const QString& filePath, const QString& outDir, ItemTypes types) {
         QFile file(filePath);
         QString outFile;
 
@@ -397,9 +396,38 @@ void MainWindow::on_toolButton_CopyTo_clicked()
     };
 
     QDir tmpDir(m_copyTo);
+    const int column = 0;
     if (!m_copyTo.isEmpty() && tmpDir.exists()) {
         auto tree = ui->treeWidget;
 
+        QTreeWidgetItemIterator it(tree);
+        bool copyError = false;
+        while (*it) {
+            QTreeWidgetItem* item = *it;
+            auto topItem = item->parent();
+
+            if (item->checkState(column) == Qt::Checked && topItem) {
+                int indexTopItem = tree->indexOfTopLevelItem(topItem);
+                QString filePath = item->text(column);
+                QFileInfo fileInfo(filePath);
+
+                bool copyFileStatus = copyFile(filePath, m_copyTo, ItemTypes(indexTopItem));
+
+                if (!copyFileStatus)
+                    addLog(trUtf8("Файл \"%1\" скопирован!").arg(fileInfo.fileName()));
+                else {
+                    copyError = true;
+                    addLogErr(trUtf8("Ошибка копирования файла - \"%1\"!").arg(fileInfo.fileName()));
+                }
+            }
+            ++it;
+        }
+        if (!copyError)
+            addLog(trUtf8("Выбранные файлы успешно скопированы!"));
+        else
+            addLogErr(trUtf8("Ошибка копирования файлов!"));
+
+        /*
         int topItemCount = tree->topLevelItemCount();
         for (int nTopItem = 0; nTopItem < topItemCount; nTopItem++) {
             auto topItem = tree->topLevelItem(nTopItem);
@@ -413,8 +441,9 @@ void MainWindow::on_toolButton_CopyTo_clicked()
                 }
             }
         }
+        */
     } else
-        addLogErr(trUtf8("Сначала выберите директорию!"));
+        addLogErr(trUtf8("Не указана директория в которую требуется скопировать библиотеки Qt!"));
 }
 
 void MainWindow::on_toolButton_QtLibs_clicked()
