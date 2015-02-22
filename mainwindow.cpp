@@ -115,7 +115,7 @@ void MainWindow::setPID(qint64 PID)
 
         m_PID = PID;
         ui->lineEdit_PID->setText(QString::number(PID));
-        
+
         updateDependencyTree();
     } else {
         addLogErr(trUtf8("Идентификатор процесса не задан."));
@@ -211,7 +211,6 @@ void MainWindow::processError()
 void MainWindow::updateDependencyTree()
 {
     ui->treeWidget->clear();
-    ui->treeWidget->setColumnCount(1);
 
     if (m_PID <= 0) {
         addLogErr(trUtf8("Сначала выберите процесс или запустите его!"));
@@ -270,9 +269,39 @@ void MainWindow::updateDependencyTree()
 
 void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
 {
-    for (int i = 0; i < item->childCount(); i++) {
+    //!!! Реализация выбора элементов в дереве зависимостей
+
+    // Блокируем сигналы дерева зависимостей (treeWidget),
+    // дабы избежать рекурсии при ручном управлении состоянием элементов.
+    ui->treeWidget->blockSignals(true);
+
+    // Изменяем состояние всех дочерних элементов
+    int childCount = item->childCount();
+    for (int i = 0; i < childCount; i++)
         item->child(i)->setCheckState(column, item->checkState(column));
+
+    // Установка статусов Qt::Checked, Qt::Unchecked, Qt::PartiallyChecked
+    QTreeWidgetItem* root = item->parent();
+    if (root && (root != item)) {
+        int childCount = root->childCount();
+        int checkedCount = 0;
+
+        // Считаем общее к-во элементов с установленным статусом - Qt::Checked
+        for (int i = 0; i < childCount; i++)
+            if (root->child(i)->checkState(column) == Qt::Checked)
+                ++checkedCount;
+
+        // В зависимости от checkedCount,
+        // устанавливаем статус главному элементу.
+        if (checkedCount == childCount)
+            root->setCheckState(column, Qt::Checked);
+        else if (checkedCount == 0)
+            root->setCheckState(column, Qt::Unchecked);
+        else
+            root->setCheckState(column, Qt::PartiallyChecked);
     }
+
+    ui->treeWidget->blockSignals(false);
 }
 
 void MainWindow::do_toolButton_HWnd_release()

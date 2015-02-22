@@ -443,7 +443,7 @@
          <string>Добавляем путь к библиотекам Qt, в переменные среды запускаемого приложения</string>
         </property>
         <property name="text">
-         <string>Добавить путь к QtLibs в переменные среды</string>
+         <string>Добавить путь к QtLibs в переменные среды запускаемого процесса</string>
         </property>
         <property name="checked">
          <bool>true</bool>

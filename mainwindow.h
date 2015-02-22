@@ -41,6 +41,7 @@ private:
         ItemSystem,
         ItemOther,
     };
+
     const QString KEY_QTLIBS = "QtLibs";
     const QString KEY_QTPLUGINS = "QtPlugins";
 
