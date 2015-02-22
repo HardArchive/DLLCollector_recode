@@ -446,6 +446,28 @@ void MainWindow::on_toolButton_CopyTo_clicked()
         addLogErr(trUtf8("Не указана директория в которую требуется скопировать библиотеки Qt!"));
 }
 
+void MainWindow::on_toolButton_AddProfil_clicked()
+{
+    //TODO Доработать функцию добавления профиля.
+    
+    Qt::WindowFlags flags = windowFlags();
+    Qt::WindowFlags helpFlag = Qt::WindowContextHelpButtonHint;
+    flags = flags & (~helpFlag);
+
+    QInputDialog::getText(this,
+                          trUtf8("Название профиля Qt"),
+                          trUtf8("Ведите название для профиля Qt"),
+                          QLineEdit::Normal,
+                          QString(),
+                          nullptr,
+                          flags);
+}
+
+void MainWindow::on_toolButton_DeleteProfil_clicked()
+{
+    //TODO Доработать функцию удаления профиля.
+}
+
 void MainWindow::on_toolButton_QtLibs_clicked()
 {
     QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с библиотеками Qt"),

@@ -89,6 +89,8 @@ private slots:
     void on_toolButton_Kill_clicked();
     void on_toolButton_SelectDirCopyTo_clicked();
     void on_toolButton_CopyTo_clicked();
+    void on_toolButton_AddProfil_clicked();
+    void on_toolButton_DeleteProfil_clicked();
     void on_toolButton_QtLibs_clicked();
     void on_toolButton_QtPlugins_clicked();
     void on_checkBox_Log_clicked(bool checked);
@@ -96,6 +98,8 @@ private slots:
     void on_pushButton_UpdateTree_clicked();
     void on_pushButton_CleanLog_clicked();
 
+
+    
 public slots:
     static void _addLog(const QString& fun, const QString& mes, TypesMessage type = c_general);
 
