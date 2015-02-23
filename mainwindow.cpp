@@ -35,9 +35,9 @@ MainWindow::MainWindow(QWidget* parent)
 
 //Версия для разработчиков
 #ifdef DEV_PROJECT
-    static const QString& projectType = tr("User Edition");
-#else
     static const QString& projectType = tr("Developer Edition");
+#else
+    static const QString& projectType = tr("User Edition");
 #endif
 
     setWindowTitle(QString("%1 %2.%3 %4 - %5").arg(Info::PROGRAM_NAME).arg(Info::MAJOR).arg(Info::MINOR).arg(projectType).arg(processType));
