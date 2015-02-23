@@ -26,11 +26,11 @@ MainWindow::MainWindow(QWidget* parent)
 
 //Титул приложения
 #ifdef Q_OS_WIN64
-    const QString& currentProcessType = trUtf8("64-разрядная версия");
+    static const QString& processType = trUtf8("64-разрядная версия");
 #else
-    const QString& currentProcessType = trUtf8("32-разрядная версия");
+    static const QString& processType = trUtf8("32-разрядная версия");
 #endif
-    setWindowTitle(QString("%1 %2.%3 - %4").arg(Info::PROGRAM_NAME).arg(Info::MAJOR).arg(Info::MINOR).arg(currentProcessType));
+    setWindowTitle(QString("%1 %2.%3 - %4").arg(Info::PROGRAM_NAME).arg(Info::MAJOR).arg(Info::MINOR).arg(processType));
 
     //Инициализация истории действий
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
