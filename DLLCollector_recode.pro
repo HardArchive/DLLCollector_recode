@@ -16,7 +16,7 @@ contains(QT_ARCH, x86_64) {
 }
 
 TEMPLATE = app
-CONFIG += C++11
+QMAKE_CXXFLAGS += -std=c++1y
 
 #Для vsc2013, functions.cpp -> #include <windows.h>
 DEFINES += NOMINMAX

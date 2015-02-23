@@ -82,6 +82,7 @@ private slots:
     void updateDependencyTree();
 
     void on_treeWidget_itemChanged(QTreeWidgetItem* item, int column);
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
     void do_toolButton_HWnd_release();
     void on_toolButton_HWnd_pressed();
     void on_toolButton_PID_clicked();
@@ -99,7 +100,7 @@ private slots:
     void on_pushButton_FindQt_clicked();
     void on_pushButton_UpdateTree_clicked();
     void on_pushButton_CleanLog_clicked();
-
+    
 public slots:
     static void _addLog(const QString& fun, const QString& mes, TypesMessage type = c_general);
 
@@ -107,7 +108,6 @@ public slots:
 protected:
     void dragEnterEvent(QDragEnterEvent* event);
     void dropEvent(QDropEvent* event);
-    void closeEvent(QCloseEvent* event);
 };
 
 #endif // MAINWINDOW_H

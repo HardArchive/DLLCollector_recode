@@ -29,9 +29,9 @@ MainWindow::MainWindow(QWidget* parent)
 #else
     const QString& currentProcessType = trUtf8(" - 32-разрядная версия");
 #endif
-    setWindowTitle("DLLCollector_recode 1.0.3_dev" + currentProcessType);
+    setWindowTitle("DLLCollector_recode 1.0.4" + currentProcessType);
 
-    //Виджет уведомления
+    //Инициализация истории действий
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableWidget_Log->horizontalHeader()->resizeSection(0, 200);
     m_log = ui->tableWidget_Log;
@@ -61,6 +61,7 @@ MainWindow::MainWindow(QWidget* parent)
 MainWindow::~MainWindow()
 {
     m_log = nullptr;
+    m_process.close();
     delete ui;
 }
 
@@ -233,11 +234,13 @@ void MainWindow::updateDependencyTree()
     }
 
     auto makeItem = [](const QString& text, Qt::CheckState state) {
+        const int column = 0;
         QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setText(0, text);
-        item->setToolTip(0, text);
+        item->setText(column, text);
+        item->setToolTip(column, text);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-        item->setCheckState(0, state);
+        item->setCheckState(column, state);
+        
         return item;
     };
 
@@ -308,6 +311,15 @@ void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
     }
 
     ui->treeWidget->blockSignals(false);
+}
+
+void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem* item, int column)
+{
+    if (item->parent()) {
+        const int role = 0;
+        const QString& filePath = item->data(column, role).toString();
+        QProcess::execute(QString("explorer.exe /select,\"%1\"").arg(filePath));
+    }
 }
 
 void MainWindow::do_toolButton_HWnd_release()
@@ -465,11 +477,13 @@ void MainWindow::on_toolButton_SaveProfil_clicked()
     flags = flags & (~helpFlag);
 
     bool selection = false;
+    QDir dir(m_QtLibs);
+    dir.cdUp();
     const QString nameProfil = QInputDialog::getText(this,
                                                      trUtf8("Название профиля Qt"),
                                                      trUtf8("Ведите название для профиля Qt"),
                                                      QLineEdit::Normal,
-                                                     QString(),
+                                                     dir.dirName(),
                                                      &selection,
                                                      flags);
     if (selection && !nameProfil.isEmpty()) {
@@ -601,11 +615,4 @@ void MainWindow::dropEvent(QDropEvent* event)
     }
 
     QMainWindow::dropEvent(event);
-}
-
-void MainWindow::closeEvent(QCloseEvent* event)
-{
-    Q_UNUSED(event)
-
-    m_process.close();
 }
