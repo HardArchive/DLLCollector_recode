@@ -470,8 +470,6 @@ void MainWindow::on_comboBox_QtProfil_activated(const QString& arg1)
 
 void MainWindow::on_toolButton_SaveProfil_clicked()
 {
-    //TODO Доработать функцию добавления профиля.
-
     Qt::WindowFlags flags = windowFlags();
     Qt::WindowFlags helpFlag = Qt::WindowContextHelpButtonHint;
     flags = flags & (~helpFlag);
@@ -510,7 +508,8 @@ void MainWindow::on_toolButton_DeleteProfil_clicked()
     const QString currentText = ui->comboBox_QtProfil->currentText();
 
     ui->comboBox_QtProfil->removeItem(currentIdx);
-
+    addLog(trUtf8("Профиль \"%1\" удалён!").arg(currentText));
+    
     m_settings->beginGroup(KEY_QT_PROFILES);
     m_settings->remove(currentText);
     m_settings->endGroup();
