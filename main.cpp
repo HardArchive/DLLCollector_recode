@@ -15,16 +15,15 @@ MainWindow* local;
 void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
     QTextStream cerr(stderr);
-    QString DIV = "; ";
-    QString LS = "\n";
-    QString BEGIN = "====== %1 ======" + LS;
-    QString time = "Time: " + QTime::currentTime().toString("H:m:s") + LS;
-    QString file = "File: " + QString(context.file) + LS;
-    QString function = "Function: " + QString(context.function) + LS;
-    QString line = "Line: " + QString::number(context.line) + LS;
-    QString message = "Message: " + msg + LS;
+    const QString LS = "\n";
+    const QString BEGIN = "====== %1 ======" + LS;
+    const QString time = "Time: " + QTime::currentTime().toString("H:m:s") + LS;
+    const QString file = "File: " + QString(context.file) + LS;
+    const QString function = "Function: " + QString(context.function) + LS;
+    const QString line = "Line: " + QString::number(context.line) + LS;
+    const QString message = "Message: " + msg + LS;
 
-    QString formatedMessage = BEGIN + time + file + line + function + message;
+    const QString formatedMessage = BEGIN + time + file + line + function + message;
 
     auto makeMessage = [&](const QString& prefix) {
         cerr << formatedMessage.arg(prefix) << endl;
@@ -56,7 +55,7 @@ int main(int argc, char* argv[])
     setlocale(LC_ALL, "Russian");
 
     QApplication a(argc, argv);
-    
+
     MainWindow w;
     local = &w;
     w.show();

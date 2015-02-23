@@ -20,7 +20,6 @@ SelectProcess::SelectProcess(QWidget* parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     ui->processList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    //ui->processList->horizontalHeader()->resizeSection(1, 70);
 
     updateProcessList();
 }
@@ -39,11 +38,11 @@ void SelectProcess::updateProcessList()
     table->setRowCount(0);
 
     if (getProcessList(list)) {
-        for (ProcessInfo i : list) {
-            QTableWidgetItem* name = new QTableWidgetItem(i.name);
-            QTableWidgetItem* pid = new QTableWidgetItem(QString::number(i.pid));
+        for (const ProcessInfo& info : list) {
+            QTableWidgetItem* name = new QTableWidgetItem(info.name);
+            QTableWidgetItem* pid = new QTableWidgetItem(QString::number(info.pid));
 
-            int row = table->rowCount();
+            const int row = table->rowCount();
             table->setRowCount(row + 1);
             table->setItem(row, 0, name);
             table->setItem(row, 1, pid);
@@ -60,7 +59,7 @@ void SelectProcess::on_pushButton_Update_clicked()
 
 void SelectProcess::on_processList_itemSelectionChanged()
 {
-    auto table = ui->processList;
+    const auto table = ui->processList;
     m_PID = table->item(table->currentRow(), 1)->text().toInt();
 }
 

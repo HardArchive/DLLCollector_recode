@@ -366,15 +366,21 @@
        <layout class="QGridLayout" name="lay_QtProfil">
         <item row="0" column="4">
          <widget class="QToolButton" name="toolButton_DeleteProfil">
+          <property name="toolTip">
+           <string>Удалить профиль</string>
+          </property>
           <property name="text">
            <string>Удалить</string>
           </property>
          </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QToolButton" name="toolButton_AddProfil">
+         <widget class="QToolButton" name="toolButton_SaveProfil">
+          <property name="toolTip">
+           <string>Сохранить/перезаписать профиль</string>
+          </property>
           <property name="text">
-           <string>Добавить</string>
+           <string>Сохранить</string>
           </property>
          </widget>
         </item>

@@ -42,8 +42,9 @@ private:
         ItemOther,
     };
 
-    const QString KEY_QTLIBS = "QtLibs";
-    const QString KEY_QTPLUGINS = "QtPlugins";
+    const QString KEY_QT_LIBS = "QtLibs";
+    const QString KEY_QT_PLUGINS = "QtPlugins";
+    const QString KEY_QT_PROFILES = "QtProfiles";
 
     //Private variables
 private:
@@ -89,7 +90,8 @@ private slots:
     void on_toolButton_Kill_clicked();
     void on_toolButton_SelectDirCopyTo_clicked();
     void on_toolButton_CopyTo_clicked();
-    void on_toolButton_AddProfil_clicked();
+    void on_comboBox_QtProfil_activated(const QString &arg1);
+    void on_toolButton_SaveProfil_clicked();
     void on_toolButton_DeleteProfil_clicked();
     void on_toolButton_QtLibs_clicked();
     void on_toolButton_QtPlugins_clicked();
@@ -98,8 +100,6 @@ private slots:
     void on_pushButton_UpdateTree_clicked();
     void on_pushButton_CleanLog_clicked();
 
-
-    
 public slots:
     static void _addLog(const QString& fun, const QString& mes, TypesMessage type = c_general);
 

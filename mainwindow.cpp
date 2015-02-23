@@ -25,9 +25,9 @@ MainWindow::MainWindow(QWidget* parent)
 
 //Титул приложения
 #ifdef Q_OS_WIN64
-    const QString currentProcessType = trUtf8(" - 64-разрядная версия");
+    const QString& currentProcessType = trUtf8(" - 64-разрядная версия");
 #else
-    const QString currentProcessType = trUtf8(" - 32-разрядная версия");
+    const QString& currentProcessType = trUtf8(" - 32-разрядная версия");
 #endif
     setWindowTitle("DLLCollector_recode 1.0.3_dev" + currentProcessType);
 
@@ -90,11 +90,18 @@ void MainWindow::clearFields()
 void MainWindow::loadSettings()
 {
     //Загрузка параметров
-    m_QtLibs = m_settings->value(KEY_QTLIBS).toString();
+    m_QtLibs = m_settings->value(KEY_QT_LIBS).toString();
     ui->lineEdit_QtLibs->setText(m_QtLibs);
 
-    m_QtPlugins = m_settings->value(KEY_QTPLUGINS).toString();
+    m_QtPlugins = m_settings->value(KEY_QT_PLUGINS).toString();
     ui->lineEdit_QtPlugins->setText(m_QtPlugins);
+
+    m_settings->beginGroup(KEY_QT_PROFILES);
+    for (const QString& str : m_settings->allKeys()) {
+        const QStringList& list = m_settings->value(str).toStringList();
+        ui->comboBox_QtProfil->addItem(str, list);
+    }
+    m_settings->endGroup();
 }
 
 void MainWindow::setHWnd(qintptr hWnd)
@@ -153,7 +160,7 @@ void MainWindow::setQtLibs(const QString& path)
         addLog(trUtf8("Путь к библиотекам Qt - задан."));
 
         m_QtLibs = QDir::toNativeSeparators(path);
-        m_settings->setValue(KEY_QTLIBS, m_QtLibs);
+        m_settings->setValue(KEY_QT_LIBS, m_QtLibs);
         ui->lineEdit_QtLibs->setText(m_QtLibs);
     } else {
         addLogErr(trUtf8("Путь к библиотекам Qt - не задан."));
@@ -166,7 +173,7 @@ void MainWindow::setQtPlugins(const QString& path)
         addLog(trUtf8("Путь к дополниниям Qt - задан."));
 
         m_QtPlugins = QDir::toNativeSeparators(path);
-        m_settings->setValue(KEY_QTPLUGINS, m_QtPlugins);
+        m_settings->setValue(KEY_QT_PLUGINS, m_QtPlugins);
         ui->lineEdit_QtPlugins->setText(m_QtPlugins);
     } else {
         addLogErr(trUtf8("Путь к дополниниям Qt - не задан."));
@@ -239,9 +246,9 @@ void MainWindow::updateDependencyTree()
     QTreeWidgetItem* systemLibrary = makeItem(trUtf8("Системные библиотеки"), Qt::Unchecked);
     QTreeWidgetItem* otherLibrary = makeItem(trUtf8("Остальные библиотеки"), Qt::Unchecked);
 
-    const QString LIBS = m_QtLibs;
-    const QString PLUGINS = m_QtPlugins;
-    const QString SYSTEM = getWinDir();
+    const QString& LIBS = m_QtLibs;
+    const QString& PLUGINS = m_QtPlugins;
+    const QString& SYSTEM = getWinDir();
 
     for (const QString& str : tmpModuleList) {
         if (isSubPath(LIBS, str)) {
@@ -328,9 +335,9 @@ void MainWindow::on_toolButton_PID_clicked()
 
 void MainWindow::on_toolButton_Exe_clicked()
 {
-    QString tmpPath = QFileDialog::getOpenFileName(this, trUtf8("Выбор исполняемого файла"),
-                                                   "",
-                                                   trUtf8("Исполняемый файл (*.exe)"));
+    const QString& tmpPath = QFileDialog::getOpenFileName(this, trUtf8("Выбор исполняемого файла"),
+                                                          "",
+                                                          trUtf8("Исполняемый файл (*.exe)"));
     if (!tmpPath.isEmpty()) {
         setExe(QDir::toNativeSeparators(tmpPath));
     }
@@ -369,9 +376,9 @@ void MainWindow::on_toolButton_Kill_clicked()
 
 void MainWindow::on_toolButton_SelectDirCopyTo_clicked()
 {
-    QString tmpCopy = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории"),
-                                                        "",
-                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    const QString& tmpCopy = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории"),
+                                                               "",
+                                                               QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!tmpCopy.isEmpty()) {
         setCopyTo(tmpCopy);
     }
@@ -408,7 +415,7 @@ void MainWindow::on_toolButton_CopyTo_clicked()
 
             if (item->checkState(column) == Qt::Checked && topItem) {
                 int indexTopItem = tree->indexOfTopLevelItem(topItem);
-                QString filePath = item->text(column);
+                const QString& filePath = item->text(column);
                 QFileInfo fileInfo(filePath);
 
                 bool copyFileStatus = copyFile(filePath, m_copyTo, ItemTypes(indexTopItem));
@@ -427,52 +434,79 @@ void MainWindow::on_toolButton_CopyTo_clicked()
         else
             addLogErr(trUtf8("Ошибка копирования файлов!"));
 
-        /*
-        int topItemCount = tree->topLevelItemCount();
-        for (int nTopItem = 0; nTopItem < topItemCount; nTopItem++) {
-            auto topItem = tree->topLevelItem(nTopItem);
-
-            int childItemCount = topItem->childCount();
-            for (int nChildItem = 0; nChildItem < childItemCount; nChildItem++) {
-                auto childItem = topItem->child(nChildItem);
-
-                if (childItem->checkState(0) == Qt::Checked) {
-                    copyFile(childItem->text(0), m_copyTo, ItemTypes(nTopItem));
-                }
-            }
-        }
-        */
     } else
         addLogErr(trUtf8("Не указана директория в которую требуется скопировать библиотеки Qt!"));
 }
 
-void MainWindow::on_toolButton_AddProfil_clicked()
+//Выбор профиля
+void MainWindow::on_comboBox_QtProfil_activated(const QString& arg1)
+{
+    const QStringList& list = ui->comboBox_QtProfil->currentData().toStringList();
+
+    const int minimumStrCount = 2;
+    if (list.size() == minimumStrCount) {
+        addLog(trUtf8("Выбран профиль: \"%1\"").arg(arg1));
+
+        setQtLibs(list[0]);
+        setQtPlugins(list[1]);
+
+        if (m_PID) {
+            updateDependencyTree();
+        }
+    }
+}
+
+void MainWindow::on_toolButton_SaveProfil_clicked()
 {
     //TODO Доработать функцию добавления профиля.
-    
+
     Qt::WindowFlags flags = windowFlags();
     Qt::WindowFlags helpFlag = Qt::WindowContextHelpButtonHint;
     flags = flags & (~helpFlag);
 
-    QInputDialog::getText(this,
-                          trUtf8("Название профиля Qt"),
-                          trUtf8("Ведите название для профиля Qt"),
-                          QLineEdit::Normal,
-                          QString(),
-                          nullptr,
-                          flags);
+    bool selection = false;
+    const QString nameProfil = QInputDialog::getText(this,
+                                                     trUtf8("Название профиля Qt"),
+                                                     trUtf8("Ведите название для профиля Qt"),
+                                                     QLineEdit::Normal,
+                                                     QString(),
+                                                     &selection,
+                                                     flags);
+    if (selection && !nameProfil.isEmpty()) {
+
+        QVariant tmp(QStringList({ m_QtLibs, m_QtPlugins }));
+
+        if (ui->comboBox_QtProfil->findText(nameProfil, Qt::MatchContains) == -1) {
+            ui->comboBox_QtProfil->addItem(nameProfil, tmp);
+            addLog(trUtf8("Профиль \"%1\" сохранён!").arg(nameProfil));
+        } else {
+            addLog(trUtf8("Профиль \"%1\" перезаписан!").arg(nameProfil));
+        }
+
+        m_settings->beginGroup(KEY_QT_PROFILES);
+        m_settings->setValue(nameProfil, tmp);
+        m_settings->endGroup();
+    }
 }
 
 void MainWindow::on_toolButton_DeleteProfil_clicked()
 {
-    //TODO Доработать функцию удаления профиля.
+    //Удаляем выбранный профиль
+    const int currentIdx = ui->comboBox_QtProfil->currentIndex();
+    const QString currentText = ui->comboBox_QtProfil->currentText();
+
+    ui->comboBox_QtProfil->removeItem(currentIdx);
+
+    m_settings->beginGroup(KEY_QT_PROFILES);
+    m_settings->remove(currentText);
+    m_settings->endGroup();
 }
 
 void MainWindow::on_toolButton_QtLibs_clicked()
 {
-    QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с библиотеками Qt"),
-                                                    "",
-                                                    QFileDialog::ShowDirsOnly);
+    const QString& tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с библиотеками Qt"),
+                                                           "",
+                                                           QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
         setQtLibs(tmp);
     }
@@ -480,9 +514,9 @@ void MainWindow::on_toolButton_QtLibs_clicked()
 
 void MainWindow::on_toolButton_QtPlugins_clicked()
 {
-    QString tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с дополнениями Qt"),
-                                                    "",
-                                                    QFileDialog::ShowDirsOnly);
+    const QString& tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с дополнениями Qt"),
+                                                           "",
+                                                           QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
         setQtPlugins(tmp);
     }
@@ -499,7 +533,7 @@ void MainWindow::on_pushButton_FindQt_clicked()
     const QString QT_PLUGINS = "plugins";
 
     addLog(trUtf8("Ищем Qt..."));
-    const QString qtDir = findPathQt();
+    const QString& qtDir = findPathQt();
     if (!qtDir.isEmpty()) {
         addLog(trUtf8("Qt найден!"));
         setQtLibs(qtDir + QDir::separator() + QT_BIN);
