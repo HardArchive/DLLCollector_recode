@@ -76,8 +76,8 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
-    m_log = nullptr;
     m_process.close();
+    m_log = nullptr;
     delete ui;
 }
 
