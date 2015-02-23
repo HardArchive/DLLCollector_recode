@@ -420,7 +420,7 @@ void MainWindow::on_toolButton_CopyTo_clicked()
 
                 bool copyFileStatus = copyFile(filePath, m_copyTo, ItemTypes(indexTopItem));
 
-                if (!copyFileStatus)
+                if (copyFileStatus)
                     addLog(trUtf8("Файл \"%1\" скопирован!").arg(fileInfo.fileName()));
                 else {
                     copyError = true;
