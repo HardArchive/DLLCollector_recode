@@ -13,6 +13,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "functions.h"
+#include "info.h"
 
 //Определение переменной, для вывода сообщений
 QTableWidget* MainWindow::m_log;
@@ -25,19 +26,19 @@ MainWindow::MainWindow(QWidget* parent)
 
 //Титул приложения
 #ifdef Q_OS_WIN64
-    const QString& currentProcessType = trUtf8(" - 64-разрядная версия");
+    const QString& currentProcessType = trUtf8("64-разрядная версия");
 #else
-    const QString& currentProcessType = trUtf8(" - 32-разрядная версия");
+    const QString& currentProcessType = trUtf8("32-разрядная версия");
 #endif
-    setWindowTitle("DLLCollector_recode 1.0.4" + currentProcessType);
+    setWindowTitle(QString("%1 %2.%3 - %4").arg(Info::PROGRAM_NAME).arg(Info::MAJOR).arg(Info::MINOR).arg(currentProcessType));
 
     //Инициализация истории действий
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableWidget_Log->horizontalHeader()->resizeSection(0, 200);
     m_log = ui->tableWidget_Log;
 
-    //Для работы с параметрами
-    m_settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "DLLCollector_recode", "settings", this);
+    //Для работы с параметрами программы
+    m_settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, Info::PROGRAM_NAME, "settings", this);
 
     //Загрузка параметров
     loadSettings();
@@ -54,7 +55,7 @@ MainWindow::MainWindow(QWidget* parent)
     //Видимость лога
     ui->widget_Log->setVisible(ui->checkBox_Log->isChecked());
 
-    //Свой обработчик событий
+    //Свой обработчик событий, для кнопки "прицельного" выбора окна
     ui->toolButton_HWnd->installEventFilter(this);
 }
 
@@ -285,7 +286,7 @@ void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
     ui->treeWidget->blockSignals(true);
 
     // Изменяем состояние всех дочерних элементов
-    int childCount = item->childCount();
+    const int childCount = item->childCount();
     for (int i = 0; i < childCount; i++)
         item->child(i)->setCheckState(column, item->checkState(column));
 
@@ -293,7 +294,7 @@ void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
 
     QTreeWidgetItem* root = item->parent();
     if (root && root != item) {
-        int childCount = root->childCount();
+        const int childCount = root->childCount();
         int checkedCount = 0;
 
         // Считаем общее к-во элементов с установленным статусом - Qt::Checked

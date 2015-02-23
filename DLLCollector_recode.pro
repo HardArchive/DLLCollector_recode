@@ -31,7 +31,8 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     functions.h \
     selectprocess.h \
-    debug.h
+    debug.h \
+    info.h
 
 FORMS    += mainwindow.ui \
     selectprocess.ui
