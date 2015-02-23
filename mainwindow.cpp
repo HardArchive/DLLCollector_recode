@@ -24,20 +24,36 @@ MainWindow::MainWindow(QWidget* parent)
 {
     ui->setupUi(this);
 
-//Титул приложения
+//!!! Титул приложения !!!
+
+//Разрядность приложения
 #ifdef Q_OS_WIN64
     static const QString& processType = trUtf8("64-разрядная версия");
 #else
     static const QString& processType = trUtf8("32-разрядная версия");
 #endif
-    setWindowTitle(QString("%1 %2.%3 - %4").arg(Info::PROGRAM_NAME).arg(Info::MAJOR).arg(Info::MINOR).arg(processType));
 
-    //Инициализация истории действий
+//Версия для разработчиков
+#ifdef DEV_PROJECT
+    static const QString& projectType = tr("User Edition");
+#else
+    static const QString& projectType = tr("Developer Edition");
+#endif
+
+    setWindowTitle(QString("%1 %2.%3 %4 - %5").arg(Info::PROGRAM_NAME).arg(Info::MAJOR).arg(Info::MINOR).arg(projectType).arg(processType));
+
+    //!!! Инициализация истории действий !!!
+
     ui->tableWidget_Log->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->tableWidget_Log->horizontalHeader()->resizeSection(0, 200);
     m_log = ui->tableWidget_Log;
 
-    //Для работы с параметрами программы
+    //Видимость лога
+    ui->widget_Log->setVisible(ui->checkBox_Log->isChecked());
+
+    //!!! Настройки программы !!!
+
+    //Инициализация настроек
     m_settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, Info::PROGRAM_NAME, "settings", this);
 
     //Загрузка параметров
@@ -52,8 +68,7 @@ MainWindow::MainWindow(QWidget* parent)
     //Ошибка при запуске целевого процесса
     connect(&m_process, SIGNAL(error(QProcess::ProcessError)), SLOT(processError()));
 
-    //Видимость лога
-    ui->widget_Log->setVisible(ui->checkBox_Log->isChecked());
+    //!!! Прицельный выбор окна
 
     //Свой обработчик событий, для кнопки "прицельного" выбора окна
     ui->toolButton_HWnd->installEventFilter(this);

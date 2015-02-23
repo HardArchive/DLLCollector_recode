@@ -21,6 +21,9 @@ QMAKE_CXXFLAGS += -std=c++1y
 #Для vsc2013, functions.cpp -> #include <windows.h>
 DEFINES += NOMINMAX
 
+#Версия для разработчиков
+DEFINES += DEV_PROJECT
+
 LIBS+= -lpsapi
 
 SOURCES += main.cpp\
