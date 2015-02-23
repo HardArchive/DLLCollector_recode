@@ -290,8 +290,9 @@ void MainWindow::on_treeWidget_itemChanged(QTreeWidgetItem* item, int column)
         item->child(i)->setCheckState(column, item->checkState(column));
 
     // Установка статусов Qt::Checked, Qt::Unchecked, Qt::PartiallyChecked
+
     QTreeWidgetItem* root = item->parent();
-    if (root && (root != item)) {
+    if (root && root != item) {
         int childCount = root->childCount();
         int checkedCount = 0;
 
@@ -347,8 +348,9 @@ void MainWindow::on_toolButton_PID_clicked()
 
 void MainWindow::on_toolButton_Exe_clicked()
 {
-    const QString& tmpPath = QFileDialog::getOpenFileName(this, trUtf8("Выбор исполняемого файла"),
-                                                          "",
+    const QString& tmpPath = QFileDialog::getOpenFileName(this,
+                                                          trUtf8("Выбор исполняемого файла"),
+                                                          m_exePath,
                                                           trUtf8("Исполняемый файл (*.exe)"));
     if (!tmpPath.isEmpty()) {
         setExe(QDir::toNativeSeparators(tmpPath));
@@ -388,8 +390,9 @@ void MainWindow::on_toolButton_Kill_clicked()
 
 void MainWindow::on_toolButton_SelectDirCopyTo_clicked()
 {
-    const QString& tmpCopy = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории"),
-                                                               "",
+    const QString& tmpCopy = QFileDialog::getExistingDirectory(this,
+                                                               trUtf8("Выбор директории"),
+                                                               m_copyTo,
                                                                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!tmpCopy.isEmpty()) {
         setCopyTo(tmpCopy);
@@ -507,18 +510,27 @@ void MainWindow::on_toolButton_DeleteProfil_clicked()
     const int currentIdx = ui->comboBox_QtProfil->currentIndex();
     const QString currentText = ui->comboBox_QtProfil->currentText();
 
-    ui->comboBox_QtProfil->removeItem(currentIdx);
-    addLog(trUtf8("Профиль \"%1\" удалён!").arg(currentText));
-    
-    m_settings->beginGroup(KEY_QT_PROFILES);
-    m_settings->remove(currentText);
-    m_settings->endGroup();
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this,
+                                  trUtf8("Удаление профиля"),
+                                  trUtf8("Вы уверены, что хотите удалить профиль \"%1\"?").arg(currentText),
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        ui->comboBox_QtProfil->removeItem(currentIdx);
+        addLog(trUtf8("Профиль \"%1\" удалён!").arg(currentText));
+
+        m_settings->beginGroup(KEY_QT_PROFILES);
+        m_settings->remove(currentText);
+        m_settings->endGroup();
+    }
 }
 
 void MainWindow::on_toolButton_QtLibs_clicked()
 {
-    const QString& tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с библиотеками Qt"),
-                                                           "",
+    const QString& tmp = QFileDialog::getExistingDirectory(this,
+                                                           trUtf8("Выбор директории с библиотеками Qt"),
+                                                           m_QtLibs,
                                                            QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
         setQtLibs(tmp);
@@ -527,8 +539,9 @@ void MainWindow::on_toolButton_QtLibs_clicked()
 
 void MainWindow::on_toolButton_QtPlugins_clicked()
 {
-    const QString& tmp = QFileDialog::getExistingDirectory(this, trUtf8("Выбор директории с дополнениями Qt"),
-                                                           "",
+    const QString& tmp = QFileDialog::getExistingDirectory(this,
+                                                           trUtf8("Выбор директории с дополнениями Qt"),
+                                                           m_QtPlugins,
                                                            QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
         setQtPlugins(tmp);
