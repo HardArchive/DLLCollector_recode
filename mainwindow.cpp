@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <QFileInfo>
 #include <QDir>
+#include <QClipboard>
 
 //Project
 #include "mainwindow.h"
@@ -23,6 +24,11 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //!!! Информация о программе !!!
+    QApplication::setApplicationName(Info::ApplicationName);
+    QApplication::setApplicationVersion(QString("%1.%2").arg(Info::MAJOR).arg(Info::MINOR));
+    QApplication::setOrganizationName(Info::OrganizationName);
 
 //!!! Титул приложения !!!
 
@@ -40,7 +46,7 @@ MainWindow::MainWindow(QWidget* parent)
     static const QString& projectType = tr("User Edition");
 #endif
 
-    setWindowTitle(QString("%1 %2.%3 %4 - %5").arg(Info::PROGRAM_NAME).arg(Info::MAJOR).arg(Info::MINOR).arg(projectType).arg(processType));
+    setWindowTitle(QString("%1 %2.%3 %4 - %5").arg(Info::ApplicationName).arg(Info::MAJOR).arg(Info::MINOR).arg(projectType).arg(processType));
 
     //!!! Инициализация истории действий !!!
 
@@ -51,7 +57,7 @@ MainWindow::MainWindow(QWidget* parent)
     //!!! Настройки программы !!!
 
     //Инициализация настроек
-    m_settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, Info::PROGRAM_NAME, "settings", this);
+    m_settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, Info::ApplicationName, "settings", this);
 
     //Загрузка параметров
     loadSettings();
@@ -106,12 +112,12 @@ void MainWindow::saveSettings()
     m_settings->clear();
 
     //Сохранение параметров
-    m_settings->setValue(KEY_SELECTED_PROFIL, ui->comboBox_QtProfil->currentIndex());
-    m_settings->setValue(KEY_ENV_CHECKED, ui->envExec->isChecked());
-    m_settings->setValue(KEY_VISIBILITY_LOG, ui->checkBox_Log->isChecked());
-    m_settings->setValue(KEY_WINDOW_SIZE, size());
+    m_settings->setValue(Settings::Profile::SelectedProfil, ui->comboBox_QtProfil->currentIndex());
+    m_settings->setValue(Settings::GUI::EnvChecked, ui->envExec->isChecked());
+    m_settings->setValue(Settings::GUI::VisibleLog, ui->checkBox_Log->isChecked());
+    m_settings->setValue(Settings::GUI::WindowSize, size());
 
-    m_settings->beginGroup(KEY_QT_PROFILES);
+    m_settings->beginGroup(Settings::Profile::QtProfiles);
     const int profCount = ui->comboBox_QtProfil->count();
     for (int i = 0; i < profCount; ++i) {
         const QString& text = ui->comboBox_QtProfil->itemText(i);
@@ -123,19 +129,39 @@ void MainWindow::saveSettings()
 
 void MainWindow::loadSettings()
 {
-    //Загрузка параметров
-    ui->envExec->setChecked(m_settings->value(KEY_ENV_CHECKED).toBool());
-    ui->checkBox_Log->setChecked(m_settings->value(KEY_VISIBILITY_LOG).toBool());
-    resize(m_settings->value(KEY_WINDOW_SIZE).toSize());
+    //!!! Загрузка параметров !!!
 
-    m_settings->beginGroup(KEY_QT_PROFILES);
+    //1
+    {
+        bool tmpBool = true;
+        const QVariant& tmpVar = m_settings->value(Settings::GUI::EnvChecked);
+        if (!tmpVar.isNull())
+            tmpBool = tmpVar.toBool();
+        ui->envExec->setChecked(tmpBool);
+    }
+
+    //2
+    {
+        bool tmpBool = true;
+        const QVariant& tmpVar = m_settings->value(Settings::GUI::VisibleLog);
+        if (!tmpVar.isNull())
+            tmpBool = tmpVar.toBool();
+        ui->checkBox_Log->setChecked(tmpBool);
+    }
+
+    //3
+    resize(m_settings->value(Settings::GUI::WindowSize).toSize());
+
+    //4
+    m_settings->beginGroup(Settings::Profile::QtProfiles);
     for (const QString& str : m_settings->allKeys()) {
         const QVariant& var = m_settings->value(str);
         ui->comboBox_QtProfil->addItem(str, var);
     }
     m_settings->endGroup();
 
-    const QVariant& profile = m_settings->value(KEY_SELECTED_PROFIL);
+    //5
+    const QVariant& profile = m_settings->value(Settings::Profile::SelectedProfil);
     if (!profile.isNull()) {
         const int indexProfil = profile.toInt();
         ui->comboBox_QtProfil->setCurrentIndex(indexProfil);
@@ -607,6 +633,26 @@ void MainWindow::on_pushButton_CleanLog_clicked()
     auto table = ui->tableWidget_Log;
     table->clearContents();
     table->setRowCount(0);
+}
+
+void MainWindow::on_pushButton_CopyLog_clicked()
+{
+    auto table = ui->tableWidget_Log;
+    QClipboard* clipboard = QApplication::clipboard();
+
+    QStringList list;
+    QString tmpStr;
+    int iColumnCount = table->columnCount();
+    int iRowCount = table->rowCount();
+    for (int i = 0; i < iRowCount; ++i) {
+        for (int j = 0; j < iColumnCount; ++j) {
+            tmpStr += table->item(i, j)->text() + ';';
+        }
+        list << tmpStr;
+        tmpStr.clear();
+    }
+
+    clipboard->setText(list.join('\r'));
 }
 
 void MainWindow::_addLog(const QString& fun, const QString& mes, TypesMessage type)

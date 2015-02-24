@@ -11,8 +11,8 @@
 
 QT_BEGIN_NAMESPACE
 class QTreeWidgetItem;
-class QSettings;
 class QTableWidget;
+class QSettings;
 QT_END_NAMESPACE
 
 //Project
@@ -30,12 +30,6 @@ enum TypesMessage {
     c_critical,
     c_fatal,
 };
-
-static const QString KEY_WINDOW_SIZE = "WINDOW_SIZE";
-static const QString KEY_SELECTED_PROFIL = "SELECTED_QT_PROFIL";
-static const QString KEY_ENV_CHECKED = "ENVIRONMENT_CHECKED";
-static const QString KEY_VISIBILITY_LOG = "VISIBILITY_LOG";
-static const QString KEY_QT_PROFILES = "QtProfiles";
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -103,6 +97,7 @@ private slots:
     void on_pushButton_FindQt_clicked();
     void on_pushButton_UpdateTree_clicked();
     void on_pushButton_CleanLog_clicked();
+    void on_pushButton_CopyLog_clicked();
 
 public slots:
     static void _addLog(const QString& fun, const QString& mes, TypesMessage type = c_general);

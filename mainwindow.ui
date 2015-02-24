@@ -44,16 +44,6 @@
        </property>
        <item row="0" column="0">
         <layout class="QGridLayout" name="lay_Log">
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_Log">
-           <property name="text">
-            <string>История действий</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="0">
           <spacer name="horizontalSpacer">
            <property name="orientation">
@@ -77,7 +67,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
+         <item row="2" column="3">
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -90,7 +80,7 @@
            </property>
           </spacer>
          </item>
-         <item row="1" column="0" colspan="3">
+         <item row="1" column="0" colspan="4">
           <widget class="QTableWidget" name="tableWidget_Log">
            <property name="toolTip">
             <string>История действий</string>
@@ -129,6 +119,23 @@
              <string>Сообщение</string>
             </property>
            </column>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="pushButton_CopyLog">
+           <property name="text">
+            <string>Скопировать</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" colspan="2">
+          <widget class="QLabel" name="label_Log">
+           <property name="text">
+            <string>История действий</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
           </widget>
          </item>
         </layout>
