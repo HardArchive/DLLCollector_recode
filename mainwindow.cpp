@@ -127,7 +127,7 @@ void MainWindow::loadSettings()
     ui->envExec->setChecked(m_settings->value(KEY_ENV_CHECKED).toBool());
     ui->checkBox_Log->setChecked(m_settings->value(KEY_VISIBILITY_LOG).toBool());
     resize(m_settings->value(KEY_WINDOW_SIZE).toSize());
-    
+
     m_settings->beginGroup(KEY_QT_PROFILES);
     for (const QString& str : m_settings->allKeys()) {
         const QVariant& var = m_settings->value(str);
@@ -208,12 +208,12 @@ void MainWindow::setQtLibs(const QString& path)
 void MainWindow::setQtPlugins(const QString& path)
 {
     if (!path.isEmpty()) {
-        addLog(trUtf8("Путь к дополниниям Qt - задан."));
+        addLog(trUtf8("Путь к плагинам Qt - задан."));
 
         m_QtPlugins = QDir::toNativeSeparators(path);
         ui->lineEdit_QtPlugins->setText(m_QtPlugins);
     } else {
-        addLogErr(trUtf8("Путь к дополниниям Qt - не задан."));
+        addLogErr(trUtf8("Путь к плагинам Qt - не задан."));
     }
 }
 
@@ -496,7 +496,7 @@ void MainWindow::on_comboBox_QtProfil_activated(int arg1)
 
     const int minimumStrCount = 2;
     if (list.size() == minimumStrCount) {
-        addLog(trUtf8("Выбран профиль: \"%1\"").arg(arg1));
+        addLog(trUtf8("Выбран профиль: \"%1\"").arg(ui->comboBox_QtProfil->itemText(arg1)));
 
         setQtLibs(list[0]);
         setQtPlugins(list[1]);
@@ -568,7 +568,7 @@ void MainWindow::on_toolButton_QtLibs_clicked()
 void MainWindow::on_toolButton_QtPlugins_clicked()
 {
     const QString& tmp = QFileDialog::getExistingDirectory(this,
-                                                           trUtf8("Выбор директории с дополнениями Qt"),
+                                                           trUtf8("Выбор директории с плагинами Qt"),
                                                            m_QtPlugins,
                                                            QFileDialog::ShowDirsOnly);
     if (!tmp.isEmpty()) {
