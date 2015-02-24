@@ -22,7 +22,7 @@ QMAKE_CXXFLAGS += -std=c++1y
 DEFINES += NOMINMAX
 
 #Версия для разработчиков
-#DEFINES += DEV_PROJECT
+DEFINES += DEV_PROJECT
 
 LIBS+= -lpsapi
 
