@@ -48,9 +48,6 @@ MainWindow::MainWindow(QWidget* parent)
     ui->tableWidget_Log->horizontalHeader()->resizeSection(0, 200);
     m_log = ui->tableWidget_Log;
 
-    //Видимость лога
-    ui->widget_Log->setVisible(ui->checkBox_Log->isChecked());
-
     //!!! Настройки программы !!!
 
     //Инициализация настроек
@@ -104,21 +101,46 @@ void MainWindow::clearFields()
     m_exePath.clear();
 }
 
+void MainWindow::saveSettings()
+{
+    m_settings->clear();
+
+    //Сохранение параметров
+    m_settings->setValue(KEY_SELECTED_PROFIL, ui->comboBox_QtProfil->currentIndex());
+    m_settings->setValue(KEY_ENV_CHECKED, ui->envExec->isChecked());
+    m_settings->setValue(KEY_VISIBILITY_LOG, ui->checkBox_Log->isChecked());
+    m_settings->setValue(KEY_WINDOW_SIZE, size());
+
+    m_settings->beginGroup(KEY_QT_PROFILES);
+    const int profCount = ui->comboBox_QtProfil->count();
+    for (int i = 0; i < profCount; ++i) {
+        const QString& text = ui->comboBox_QtProfil->itemText(i);
+        const QVariant& var = ui->comboBox_QtProfil->itemData(i);
+        m_settings->setValue(text, var);
+    }
+    m_settings->endGroup();
+}
+
 void MainWindow::loadSettings()
 {
     //Загрузка параметров
-    m_QtLibs = m_settings->value(KEY_QT_LIBS).toString();
-    ui->lineEdit_QtLibs->setText(m_QtLibs);
-
-    m_QtPlugins = m_settings->value(KEY_QT_PLUGINS).toString();
-    ui->lineEdit_QtPlugins->setText(m_QtPlugins);
-
+    ui->envExec->setChecked(m_settings->value(KEY_ENV_CHECKED).toBool());
+    ui->checkBox_Log->setChecked(m_settings->value(KEY_VISIBILITY_LOG).toBool());
+    resize(m_settings->value(KEY_WINDOW_SIZE).toSize());
+    
     m_settings->beginGroup(KEY_QT_PROFILES);
     for (const QString& str : m_settings->allKeys()) {
-        const QStringList& list = m_settings->value(str).toStringList();
-        ui->comboBox_QtProfil->addItem(str, list);
+        const QVariant& var = m_settings->value(str);
+        ui->comboBox_QtProfil->addItem(str, var);
     }
     m_settings->endGroup();
+
+    const QVariant& profile = m_settings->value(KEY_SELECTED_PROFIL);
+    if (!profile.isNull()) {
+        const int indexProfil = profile.toInt();
+        ui->comboBox_QtProfil->setCurrentIndex(indexProfil);
+        on_comboBox_QtProfil_activated(indexProfil);
+    }
 }
 
 void MainWindow::setHWnd(qintptr hWnd)
@@ -177,7 +199,6 @@ void MainWindow::setQtLibs(const QString& path)
         addLog(trUtf8("Путь к библиотекам Qt - задан."));
 
         m_QtLibs = QDir::toNativeSeparators(path);
-        m_settings->setValue(KEY_QT_LIBS, m_QtLibs);
         ui->lineEdit_QtLibs->setText(m_QtLibs);
     } else {
         addLogErr(trUtf8("Путь к библиотекам Qt - не задан."));
@@ -190,7 +211,6 @@ void MainWindow::setQtPlugins(const QString& path)
         addLog(trUtf8("Путь к дополниниям Qt - задан."));
 
         m_QtPlugins = QDir::toNativeSeparators(path);
-        m_settings->setValue(KEY_QT_PLUGINS, m_QtPlugins);
         ui->lineEdit_QtPlugins->setText(m_QtPlugins);
     } else {
         addLogErr(trUtf8("Путь к дополниниям Qt - не задан."));
@@ -470,9 +490,9 @@ void MainWindow::on_toolButton_CopyTo_clicked()
 }
 
 //Выбор профиля
-void MainWindow::on_comboBox_QtProfil_activated(const QString& arg1)
+void MainWindow::on_comboBox_QtProfil_activated(int arg1)
 {
-    const QStringList& list = ui->comboBox_QtProfil->currentData().toStringList();
+    const QStringList& list = ui->comboBox_QtProfil->itemData(arg1).toStringList();
 
     const int minimumStrCount = 2;
     if (list.size() == minimumStrCount) {
@@ -513,10 +533,6 @@ void MainWindow::on_toolButton_SaveProfil_clicked()
         } else {
             addLog(trUtf8("Профиль \"%1\" перезаписан!").arg(nameProfil));
         }
-
-        m_settings->beginGroup(KEY_QT_PROFILES);
-        m_settings->setValue(nameProfil, tmp);
-        m_settings->endGroup();
     }
 }
 
@@ -535,10 +551,6 @@ void MainWindow::on_toolButton_DeleteProfil_clicked()
     if (reply == QMessageBox::Yes) {
         ui->comboBox_QtProfil->removeItem(currentIdx);
         addLog(trUtf8("Профиль \"%1\" удалён!").arg(currentText));
-
-        m_settings->beginGroup(KEY_QT_PROFILES);
-        m_settings->remove(currentText);
-        m_settings->endGroup();
     }
 }
 
@@ -564,9 +576,9 @@ void MainWindow::on_toolButton_QtPlugins_clicked()
     }
 }
 
-void MainWindow::on_checkBox_Log_clicked(bool checked)
+void MainWindow::on_checkBox_Log_stateChanged(int arg1)
 {
-    ui->widget_Log->setVisible(checked);
+    ui->widget_Log->setVisible(arg1);
 }
 
 void MainWindow::on_pushButton_FindQt_clicked()
@@ -643,4 +655,9 @@ void MainWindow::dropEvent(QDropEvent* event)
     }
 
     QMainWindow::dropEvent(event);
+}
+
+void MainWindow::closeEvent(QCloseEvent*)
+{
+    saveSettings();
 }

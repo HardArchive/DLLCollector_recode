@@ -31,6 +31,12 @@ enum TypesMessage {
     c_fatal,
 };
 
+static const QString KEY_WINDOW_SIZE = "WINDOW_SIZE";
+static const QString KEY_SELECTED_PROFIL = "SELECTED_QT_PROFIL";
+static const QString KEY_ENV_CHECKED = "ENVIRONMENT_CHECKED";
+static const QString KEY_VISIBILITY_LOG = "VISIBILITY_LOG";
+static const QString KEY_QT_PROFILES = "QtProfiles";
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -41,10 +47,6 @@ private:
         ItemSystem,
         ItemOther,
     };
-
-    const QString KEY_QT_LIBS = "QtLibs";
-    const QString KEY_QT_PLUGINS = "QtPlugins";
-    const QString KEY_QT_PROFILES = "QtProfiles";
 
     //Private variables
 private:
@@ -68,6 +70,7 @@ public:
 
 private slots:
     void clearFields();
+    void saveSettings();
     void loadSettings();
     void setHWnd(qintptr hWnd);
     void setPID(qint64 PID);
@@ -91,12 +94,12 @@ private slots:
     void on_toolButton_Kill_clicked();
     void on_toolButton_SelectDirCopyTo_clicked();
     void on_toolButton_CopyTo_clicked();
-    void on_comboBox_QtProfil_activated(const QString& arg1);
+    void on_comboBox_QtProfil_activated(int arg1);
     void on_toolButton_SaveProfil_clicked();
     void on_toolButton_DeleteProfil_clicked();
     void on_toolButton_QtLibs_clicked();
     void on_toolButton_QtPlugins_clicked();
-    void on_checkBox_Log_clicked(bool checked);
+    void on_checkBox_Log_stateChanged(int arg1);
     void on_pushButton_FindQt_clicked();
     void on_pushButton_UpdateTree_clicked();
     void on_pushButton_CleanLog_clicked();
@@ -108,6 +111,7 @@ public slots:
 protected:
     void dragEnterEvent(QDragEnterEvent* event);
     void dropEvent(QDropEvent* event);
+    void closeEvent(QCloseEvent* event);
 };
 
 #endif // MAINWINDOW_H
