@@ -39,3 +39,5 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     selectprocess.ui
+
+RC_FILE = rc/icon.rc
