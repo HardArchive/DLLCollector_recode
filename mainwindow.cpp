@@ -9,6 +9,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QClipboard>
+#include <QDebug>
 
 //Project
 #include "mainwindow.h"
@@ -488,6 +489,7 @@ void MainWindow::on_toolButton_CopyTo_clicked()
         bool copyError = false;
         while (*it) {
             QTreeWidgetItem* item = *it;
+
             auto topItem = item->parent();
 
             if (item->checkState(column) == Qt::Checked && topItem) {
@@ -553,10 +555,12 @@ void MainWindow::on_toolButton_SaveProfil_clicked()
 
         QVariant tmp(QStringList({ m_QtLibs, m_QtPlugins }));
 
-        if (ui->comboBox_QtProfil->findText(nameProfil, Qt::MatchContains) == -1) {
+        int idxItem = ui->comboBox_QtProfil->findText(nameProfil, Qt::MatchContains);
+        if (idxItem == -1) {
             ui->comboBox_QtProfil->addItem(nameProfil, tmp);
             addLog(trUtf8("Профиль \"%1\" сохранён!").arg(nameProfil));
         } else {
+            ui->comboBox_QtProfil->setItemData(idxItem, tmp);
             addLog(trUtf8("Профиль \"%1\" перезаписан!").arg(nameProfil));
         }
     }
