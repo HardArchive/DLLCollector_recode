@@ -1,7 +1,7 @@
 #-------------------------------------------------
 #
 # Project created by QtCreator 2014-11-13T10:36:01
-# Version 1.0
+# Version 1.1
 #
 #-------------------------------------------------
 
@@ -16,10 +16,12 @@ contains(QT_ARCH, x86_64) {
 }
 
 TEMPLATE = app
-QMAKE_CXXFLAGS += -std=c++1y
+CONFIG += c++14
 
-#Для vsc2013, functions.cpp -> #include <windows.h>
-DEFINES += NOMINMAX
+#Для msvc2013, functions.cpp -> #include <windows.h>
+win32-msvc2013{
+    DEFINES += NOMINMAX
+}
 
 #Версия для разработчиков
 DEFINES += DEV_PROJECT
