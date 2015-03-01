@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow {
 private:
     enum ItemTypes {
         ItemMain,
-        ItemPlugins,
+        ItemPlugin,
         ItemSystem,
         ItemOther,
     };
@@ -53,7 +53,7 @@ private:
     QString m_windowsDir{};
     QString m_QtLibs{};
     QString m_QtPlugins{};
-    QProcess m_process;
+    QProcess m_process{};
 
 public:
     explicit MainWindow(QWidget* parent = 0);

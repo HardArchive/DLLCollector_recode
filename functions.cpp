@@ -11,6 +11,11 @@
 //Project
 #include "functions.h"
 
+QString getWinDir()
+{
+    return QString(qgetenv("WINDIR"));
+}
+
 bool isSubPath(const QString& dir, const QString& path)
 {
     if (dir.isEmpty())
@@ -106,11 +111,6 @@ qintptr getHWindowFromPoint(const QPoint& point)
     HWND tmpHWnd = WindowFromPoint(tmpPoint);
 
     return reinterpret_cast<qintptr>(tmpHWnd);
-}
-
-QString getWinDir()
-{
-    return QString(qgetenv("WINDIR"));
 }
 
 QString findPathQt()

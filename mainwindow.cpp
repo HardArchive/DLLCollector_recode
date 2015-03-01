@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    
     //!!! Информация о программе !!!
     QApplication::setApplicationName(Info::ApplicationName);
     QApplication::setApplicationVersion(QString("%1.%2").arg(Info::MAJOR).arg(Info::MINOR));
@@ -468,7 +468,7 @@ void MainWindow::on_toolButton_CopyTo_clicked()
         QFile file(filePath);
         QString outFile;
 
-        if (types == ItemPlugins) {
+        if (types == ItemPlugin) {
             QString tmp = filePath;
             tmp = tmp.remove(0, m_QtPlugins.size());
             outFile = outDir + tmp;
