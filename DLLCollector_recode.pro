@@ -19,7 +19,7 @@ TEMPLATE = app
 CONFIG += c++14
 
 #Для msvc2013, functions.cpp -> #include <windows.h>
-win32-msvc2013{
+win32-msvc*{
     DEFINES += NOMINMAX
 }
 
