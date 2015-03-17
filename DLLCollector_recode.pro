@@ -18,15 +18,10 @@ contains(QT_ARCH, x86_64) {
 TEMPLATE = app
 CONFIG += c++14
 
-#Для msvc2013, functions.cpp -> #include <windows.h>
-win32-msvc*{
-    DEFINES += NOMINMAX
-}
-
 #Версия для разработчиков
 DEFINES += DEV_PROJECT
 
-LIBS+= -lpsapi
+LIBS += -lpsapi
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -43,3 +38,22 @@ FORMS    += mainwindow.ui \
     selectprocess.ui
 
 RC_FILE = rc/icon.rc
+
+#3rd
+
+#Для msvc2013
+win32-msvc*{
+    #functions.cpp -> #include <windows.h>
+    DEFINES += NOMINMAX
+
+    #Подключаем QCrashReport
+    LIBS += -lDbgHelp
+    QMAKE_CXXFLAGS_RELEASE += -Zi
+    QMAKE_LFLAGS_RELEASE += /DEBUG
+    
+}
+
+
+
+
+

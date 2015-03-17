@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>503</width>
-    <height>549</height>
+    <height>556</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -60,7 +60,7 @@
          <item row="2" column="1">
           <widget class="QPushButton" name="pushButton_CleanLog">
            <property name="toolTip">
-            <string>Очищаем историю действий</string>
+            <string>Очистить историю действий</string>
            </property>
            <property name="text">
             <string>Очистить</string>
@@ -123,6 +123,9 @@
          </item>
          <item row="2" column="2">
           <widget class="QPushButton" name="pushButton_CopyLog">
+           <property name="toolTip">
+            <string>Скопировать историю действий</string>
+           </property>
            <property name="text">
             <string>Скопировать</string>
            </property>
@@ -144,7 +147,7 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="lay_GroupProgInfo">
       <item row="0" column="0">
        <layout class="QGridLayout" name="lay_HWnd">
         <item row="0" column="0">
@@ -481,10 +484,36 @@
         </column>
        </widget>
       </item>
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </item>
     <item row="2" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="lay_AddPath">
       <item>
        <widget class="QCheckBox" name="envExec">
         <property name="toolTip">

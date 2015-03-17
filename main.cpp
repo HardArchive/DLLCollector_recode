@@ -1,17 +1,24 @@
 //STL
 
 //Native
+#include <Windows.h>
+#include <dbghelp.h>
+#include <io.h>
 
 //Qt
 #include <QApplication>
 #include <QTextStream>
 #include <QTextLine>
 #include <QTime>
+#include <QDebug>
+#include <QMessageBox>
+#include <QFile>
 
 //Project
 #include "mainwindow.h"
+#include "info.h"
 
-MainWindow* local;
+static MainWindow* local;
 void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
     QTextStream cerr(stderr);
@@ -49,8 +56,39 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QS
     }
 }
 
+#ifdef _MSC_BUILD
+LONG WINAPI CustomUnhandledExceptionFilter(PEXCEPTION_POINTERS pExInfo)
+{
+    const QString fileNameDump = Info::ApplicationName + "_dump.dmp";
+    QFile file(fileNameDump);
+    file.open(QFile::WriteOnly);
+    HANDLE hFile = (HANDLE)_get_osfhandle(file.handle());
+
+    MINIDUMP_EXCEPTION_INFORMATION info;
+    info.ThreadId = GetCurrentThreadId();
+    info.ExceptionPointers = pExInfo;
+    info.ClientPointers = FALSE;
+
+    MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile,
+                      MiniDumpNormal, &info, NULL, NULL);
+
+    QMessageBox::critical(0,
+                          QObject::trUtf8("Упс!"),
+                          QString("%1\n%2")
+                              .arg(QObject::trUtf8("Произошла критическая ошибка!"))
+                              .arg(QObject::trUtf8("Создан файл с информацией об ошибке: ").append(fileNameDump)));
+
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+#endif
+
 int main(int argc, char* argv[])
 {
+
+#ifdef _MSC_BUILD
+    SetUnhandledExceptionFilter(CustomUnhandledExceptionFilter);
+#endif
+
     qInstallMessageHandler(myMessageOutput);
     setlocale(LC_ALL, "Russian");
 

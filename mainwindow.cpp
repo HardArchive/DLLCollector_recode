@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    
+
     //!!! Информация о программе !!!
     QApplication::setApplicationName(Info::ApplicationName);
     QApplication::setApplicationVersion(QString("%1.%2").arg(Info::MAJOR).arg(Info::MINOR));
