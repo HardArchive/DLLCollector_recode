@@ -59,7 +59,8 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QS
 #ifdef _MSC_BUILD
 LONG WINAPI CustomUnhandledExceptionFilter(PEXCEPTION_POINTERS pExInfo)
 {
-    const QString fileNameDump = Info::ApplicationName + "_dump.dmp";
+    const QString progVer = QString("_v%1.%2_").arg(Info::MAJOR).arg(Info::MINOR);
+    const QString fileNameDump = Info::ApplicationName + progVer + "dump.dmp";
     QFile file(fileNameDump);
     file.open(QFile::WriteOnly);
     HANDLE hFile = (HANDLE)_get_osfhandle(file.handle());

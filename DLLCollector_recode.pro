@@ -26,7 +26,8 @@ LIBS += -lpsapi
 SOURCES += main.cpp\
         mainwindow.cpp \
     functions.cpp \
-    selectprocess.cpp
+    selectprocess.cpp \
+    info.cpp
 
 HEADERS  += mainwindow.h \
     functions.h \
@@ -50,6 +51,7 @@ win32-msvc*{
     LIBS += -lDbgHelp
     QMAKE_CXXFLAGS_RELEASE += -Zi
     QMAKE_LFLAGS_RELEASE += /DEBUG
+    
     
 }
 

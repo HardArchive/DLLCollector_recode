@@ -2,28 +2,28 @@
 #define INFO
 #include <QString>
 
-//Информация о программе
 //TODO: Не забывать инкрементировать версию;D
 
+//Информация о программе
 namespace Info {
-const int MAJOR = 1;
-const int MINOR = 6;
+extern const int MAJOR;
+extern const int MINOR;
 
-const QString ApplicationName = "DLLCollector_recode";
-const QString OrganizationName = "Illusion";
+extern const QString ApplicationName;
+extern const QString OrganizationName;
 }
 
 //Ключи нактроек
 namespace Settings {
 namespace GUI {
-    const QString WindowSize = "GUI/WindowSize";
-    const QString EnvChecked = "GUI/EnvironmentChecked";
-    const QString VisibleLog = "GUI/VisibileLog";
+    extern const QString WindowSize;
+    extern const QString EnvChecked;
+    extern const QString VisibleLog;
 }
 
 namespace Profile {
-    const QString QtProfiles = "Profile/QtProfiles";
-    const QString SelectedProfil = "Profile/SelectedProfil";
+    extern const QString QtProfiles;
+    extern const QString SelectedProfil;
 }
 }
 
