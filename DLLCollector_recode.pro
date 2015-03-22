@@ -9,10 +9,10 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-contains(QT_ARCH, x86_64) {
-    TARGET = DLLCollector_recode_x64
-} else {
+contains(QT_ARCH, x86) {
     TARGET = DLLCollector_recode_x32
+} else {
+    TARGET = DLLCollector_recode_x64
 }
 
 TEMPLATE = app
@@ -47,7 +47,11 @@ LIBS += -lpsapi
 win32-msvc*{
     
     #Поддержка Windows XP
-    QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
+    contains(QT_ARCH, x86) {
+        QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
+    } else {
+        QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.02
+    }
     DEFINES += PSAPI_VERSION=1
 
     #functions.cpp -> #include <windows.h>
