@@ -16,12 +16,10 @@ contains(QT_ARCH, x86_64) {
 }
 
 TEMPLATE = app
-CONFIG += c++14
+CONFIG += C++14
 
 #Версия для разработчиков
 DEFINES += DEV_PROJECT
-
-LIBS += -lpsapi
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -43,14 +41,15 @@ FORMS    += mainwindow.ui \
 RC_FILE = rc/icon.rc
 
 #3rd
+LIBS += -lpsapi
 
 #Для msvc2013
 win32-msvc*{
     
     #Поддержка Windows XP
-    #QMAKE_LFLAGS_CONSOLE = /SUBSYSTEM:CONSOLE,5.01
-    #QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
-    
+    QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
+    DEFINES += PSAPI_VERSION=1
+
     #functions.cpp -> #include <windows.h>
     DEFINES += NOMINMAX
 

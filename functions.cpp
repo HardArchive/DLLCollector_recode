@@ -10,6 +10,7 @@
 
 //Project
 #include "functions.h"
+#include "mainwindow.h"
 
 QString getWinDir()
 {
@@ -83,16 +84,20 @@ bool getProcessList(QList<ProcessInfo>& list)
 
 QString getFilePathFromPID(int PID)
 {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, PID);
-    if (hProcess == 0)
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+    if (hProcess == 0) {
+        addLogErr(QObject::trUtf8("Ошибка открытия процесса!"));
         return QString();
+    }
 
-    wchar_t bufPath[MAX_PATH + 1]{};
-    DWORD result = GetModuleFileNameEx(hProcess, NULL, bufPath, MAX_PATH);
+    wchar_t bufPath[MAX_PATH]{};
+    DWORD result = GetModuleFileNameEx(hProcess, NULL, bufPath, MAX_PATH - 1);
     CloseHandle(hProcess);
 
-    if (result == 0)
+    if (result == 0) {
+        addLogErr(QObject::trUtf8("Ошибка получения пути к образу процесса!"));
         return QString();
+    }
 
     return QString::fromWCharArray(bufPath);
 }
