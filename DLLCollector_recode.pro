@@ -27,13 +27,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     functions.cpp \
     selectprocess.cpp \
-    info.cpp
+    info.cpp \
+    exceptionhandler.cpp
 
 HEADERS  += mainwindow.h \
     functions.h \
     selectprocess.h \
     debug.h \
-    info.h
+    info.h \
+    exceptionhandler.h
 
 FORMS    += mainwindow.ui \
     selectprocess.ui
@@ -44,18 +46,16 @@ RC_FILE = rc/icon.rc
 
 #Для msvc2013
 win32-msvc*{
+    
+    #Поддержка Windows XP
+    #QMAKE_LFLAGS_CONSOLE = /SUBSYSTEM:CONSOLE,5.01
+    #QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
+    
     #functions.cpp -> #include <windows.h>
     DEFINES += NOMINMAX
 
-    #Подключаем QCrashReport
+    #Подключаем дампер
     LIBS += -lDbgHelp
     QMAKE_CXXFLAGS_RELEASE += -Zi
-    QMAKE_LFLAGS_RELEASE += /DEBUG
-    
-    
+    QMAKE_LFLAGS_RELEASE += /INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF
 }
-
-
-
-
-

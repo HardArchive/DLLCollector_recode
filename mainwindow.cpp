@@ -1,5 +1,5 @@
 //STL
-
+#include <thread>
 //Native
 
 //Qt
