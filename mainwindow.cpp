@@ -1,5 +1,5 @@
 //STL
-#include <thread>
+
 //Native
 
 //Qt
@@ -80,7 +80,6 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
-    m_process.close();
     m_log = nullptr;
     delete ui;
 }
@@ -183,6 +182,9 @@ void MainWindow::setHWnd(qintptr hWnd)
 
 void MainWindow::setPID(qint64 PID)
 {
+    int* test = 0;
+    *test = 0;
+    
     if (PID > 0) {
         addLog(trUtf8("Идентификатор процесса - задан."));
 
@@ -709,5 +711,6 @@ void MainWindow::dropEvent(QDropEvent* event)
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
+    m_process.close();
     saveSettings();
 }

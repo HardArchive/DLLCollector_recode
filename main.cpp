@@ -10,7 +10,8 @@
 
 //Project
 #include "mainwindow.h"
-#include "exceptionhandler.h"
+//#include "exceptionhandler.h"
+#include "crash_handler.h"
 
 static MainWindow* local;
 void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
@@ -52,13 +53,13 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QS
 
 int main(int argc, char* argv[])
 {
-    RegisterDumper();
+    
 
     qInstallMessageHandler(myMessageOutput);
     setlocale(LC_ALL, "Russian");
 
     QApplication a(argc, argv);
-
+    RegisterDumper();
     MainWindow w;
     local = &w;
     w.show();
