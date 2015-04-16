@@ -20,7 +20,7 @@ QT_END_NAMESPACE
 #include "debug.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 enum TypesMessage {
@@ -44,8 +44,8 @@ private:
 
     //Private variables
 private:
-    Ui::MainWindow* ui;
-    QSettings* m_settings;
+    Ui::MainWindow *ui{};
+    QSettings *m_settings{};
     qintptr m_hWnd{};
     qint64 m_PID{};
     QString m_exePath{};
@@ -56,11 +56,11 @@ private:
     QProcess m_process{};
 
 public:
-    explicit MainWindow(QWidget* parent = 0);
+    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    bool eventFilter(QObject* obj, QEvent* event);
-    static QTableWidget* m_log;
+    bool eventFilter(QObject *obj, QEvent *event);
+    static QTableWidget *m_log;
 
 private slots:
     void clearFields();
@@ -68,18 +68,19 @@ private slots:
     void loadSettings();
     void setHWnd(qintptr hWnd);
     void setPID(qint64 PID);
-    void setExe(const QString& path);
-    void setCopyTo(const QString& path);
-    void setQtLibs(const QString& path);
-    void setQtPlugins(const QString& path);
+    void setExe(const QString &path);
+    void setCopyTo(const QString &path);
+    void setQtLibs(const QString &path);
+    void setQtPlugins(const QString &path);
     void processSelected(qint64 PID);
     void processStarted();
     void processFinished(int exitStatus);
     void processError();
     void updateDependencyTree();
 
-    void on_treeWidget_itemChanged(QTreeWidgetItem* item, int column);
-    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem* item, int column);
+    void on_treeWidget_DependencyTree_itemChanged(QTreeWidgetItem *item, int column);
+    void on_treeWidget_DependencyTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
+    void on_treeWidget_DependencyTree_customContextMenuRequested(const QPoint &pos);
     void do_toolButton_HWnd_release();
     void on_toolButton_HWnd_pressed();
     void on_toolButton_PID_clicked();
@@ -99,14 +100,15 @@ private slots:
     void on_pushButton_CleanLog_clicked();
     void on_pushButton_CopyLog_clicked();
 
+
 public slots:
-    static void _addLog(const QString& fun, const QString& mes, TypesMessage type = c_general);
+    static void _addLog(const QString &fun, const QString &mes, TypesMessage type = c_general);
 
     // QWidget interface
 protected:
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dropEvent(QDropEvent* event);
-    void closeEvent(QCloseEvent* event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H

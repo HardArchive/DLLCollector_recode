@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>503</width>
+    <width>494</width>
     <height>556</height>
    </rect>
   </property>
@@ -375,16 +375,6 @@
       <item row="0" column="0">
        <layout class="QGridLayout" name="lay_QtProfil">
         <item row="0" column="4">
-         <widget class="QToolButton" name="toolButton_DeleteProfil">
-          <property name="toolTip">
-           <string>Удалить профиль</string>
-          </property>
-          <property name="text">
-           <string>Удалить</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
          <widget class="QToolButton" name="toolButton_SaveProfil">
           <property name="toolTip">
            <string>Сохранить/перезаписать профиль</string>
@@ -411,12 +401,35 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="5">
+         <widget class="QToolButton" name="toolButton_DeleteProfil">
+          <property name="toolTip">
+           <string>Удалить профиль</string>
+          </property>
+          <property name="text">
+           <string>Удалить</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
     </item>
     <item row="5" column="0">
      <layout class="QGridLayout" name="lay_Tree">
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="2" column="0">
        <spacer name="horizontalSpacer_3">
         <property name="orientation">
@@ -430,41 +443,11 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="pushButton_UpdateTree">
-        <property name="toolTip">
-         <string>Обновляем дерево зависимостей</string>
+      <item row="1" column="0" colspan="5">
+       <widget class="QTreeWidget" name="treeWidget_DependencyTree">
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
         </property>
-        <property name="text">
-         <string>Обновить дерево</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="label_Dependency">
-        <property name="text">
-         <string>Дерево зависимостей</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="QTreeWidget" name="treeWidget">
         <property name="toolTip">
          <string>Дерево зависимостей</string>
         </property>
@@ -484,7 +467,20 @@
         </column>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="2" column="4">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="4">
        <spacer name="horizontalSpacer_6">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -497,18 +493,25 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="0">
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="0" column="1" colspan="3">
+       <widget class="QLabel" name="label_Dependency">
+        <property name="text">
+         <string>Дерево зависимостей</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
-       </spacer>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="3">
+       <widget class="QPushButton" name="pushButton_UpdateTree">
+        <property name="toolTip">
+         <string>Обновляем дерево зависимостей</string>
+        </property>
+        <property name="text">
+         <string>Обновить дерево</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

@@ -10,11 +10,10 @@
 
 //Project
 #include "mainwindow.h"
-//#include "exceptionhandler.h"
-#include "crash_handler.h"
+#include "info.h"
 
-static MainWindow* local;
-void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+static MainWindow *local;
+void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QTextStream cerr(stderr);
     const QString LS = "\n";
@@ -27,10 +26,10 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QS
 
     const QString formatedMessage = BEGIN + time + file + line + function + message;
 
-    auto makeMessage = [&](const QString& prefix) {
+    auto makeMessage = [&](const QString &prefix) {
         cerr << formatedMessage.arg(prefix) << endl;
-        
-        if(local != nullptr){
+
+        if(local != nullptr) {
             local->_addLog(context.function, prefix + ": " + msg);
         }
     };
@@ -51,15 +50,19 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext& context, const QS
     }
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-    
 
     qInstallMessageHandler(myMessageOutput);
     setlocale(LC_ALL, "Russian");
 
     QApplication a(argc, argv);
-    RegisterDumper();
+
+    //!!! Информация о программе !!!
+    a.setApplicationName(Info::ApplicationName);
+    a.setApplicationVersion(QString("%1.%2").arg(Info::MAJOR).arg(Info::MINOR));
+    a.setOrganizationName(Info::OrganizationName);
+
     MainWindow w;
     local = &w;
     w.show();

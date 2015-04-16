@@ -6,25 +6,25 @@
 
 //Информация о программе
 namespace Info {
-extern const int MAJOR;
-extern const int MINOR;
+    extern const int MAJOR;
+    extern const int MINOR;
 
-extern const QString ApplicationName;
-extern const QString OrganizationName;
+    extern const QString ApplicationName;
+    extern const QString OrganizationName;
 }
 
 //Ключи нактроек
 namespace Settings {
-namespace GUI {
-    extern const QString WindowSize;
-    extern const QString EnvChecked;
-    extern const QString VisibleLog;
-}
+    namespace GUI {
+        extern const QString WindowSize;
+        extern const QString EnvChecked;
+        extern const QString VisibleLog;
+    }
 
-namespace Profile {
-    extern const QString QtProfiles;
-    extern const QString SelectedProfil;
-}
+    namespace Profile {
+        extern const QString QtProfiles;
+        extern const QString SelectedProfil;
+    }
 }
 
 #endif // INFO

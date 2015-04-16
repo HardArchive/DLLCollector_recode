@@ -1,13 +1,16 @@
-#-------------------------------------------------
+#---------------------------------------------------------
 #
-# Project created by QtCreator 2014-11-13T10:36:01
-# Version 1.1
+# Project created by QtCreator 3.3.1 - 2014-11-13T10:36:01
+# Version 1.2
 #
-#-------------------------------------------------
+#---------------------------------------------------------
 
-QT       += core gui
+TEMPLATE = app
+QT  += core gui widgets
+CONFIG += C++14
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+#Версия для разработчиков
+DEFINES += DEV_PROJECT
 
 contains(QT_ARCH, i386) {
     TARGET = DLLCollector_recode_x32
@@ -15,35 +18,29 @@ contains(QT_ARCH, i386) {
     TARGET = DLLCollector_recode_x64
 }
 
-TEMPLATE = app
-CONFIG += C++14
+Release: DESTDIR = Release
+Debug:   DESTDIR = Debug
 
-#Версия для разработчиков
-DEFINES += DEV_PROJECT
-
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    functions.cpp \
-    selectprocess.cpp \
-    info.cpp \
-
-HEADERS  += mainwindow.h \
-    functions.h \
-    selectprocess.h \
-    debug.h \
-    info.h \
-
-FORMS    += mainwindow.ui \
-    selectprocess.ui
-
-RC_FILE = rc/icon.rc
-
-#3rd
 LIBS += -lpsapi
 
-#Для msvc2013
+SOURCES += main.cpp \
+           mainwindow.cpp \
+           selectprocess.cpp \
+           info.cpp \
+    mutils.cpp
+
+HEADERS += mainwindow.h \
+           selectprocess.h \
+           debug.h \
+           info.h \
+    mutils.h
+
+FORMS   += mainwindow.ui \
+           selectprocess.ui \
+
+RC_FILE += rc/icon.rc
+
 win32-msvc*{
-    
     #Поддержка Windows XP
     contains(QT_ARCH, i386) {
         QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
@@ -54,7 +51,6 @@ win32-msvc*{
 
     #functions.cpp -> #include <windows.h>
     DEFINES += NOMINMAX
-
-    #Подключаем Google BreakPad
-    include($$PWD/3rd/Google_BreakPad/crash_handler.pri)
 }
+
+

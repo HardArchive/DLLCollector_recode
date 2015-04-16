@@ -11,18 +11,18 @@
 //Project
 
 namespace Ui {
-class SelectProcess;
+    class SelectProcess;
 }
 
 class SelectProcess : public QDialog {
     Q_OBJECT
 
 private:
-    Ui::SelectProcess* ui;
+    Ui::SelectProcess *ui;
     qint64 m_PID = -1;
 
 public:
-    explicit SelectProcess(QWidget* parent = 0);
+    explicit SelectProcess(QWidget *parent = 0);
     ~SelectProcess();
     qint64 getPID() const;
 

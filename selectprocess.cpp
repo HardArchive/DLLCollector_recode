@@ -8,10 +8,10 @@
 //Project
 #include "selectprocess.h"
 #include "ui_selectprocess.h"
-#include "functions.h"
+#include "mutils.h"
 #include "debug.h"
 
-SelectProcess::SelectProcess(QWidget* parent)
+SelectProcess::SelectProcess(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::SelectProcess)
 {
@@ -38,9 +38,9 @@ void SelectProcess::updateProcessList()
     table->setRowCount(0);
 
     if (getProcessList(list)) {
-        for (const ProcessInfo& info : list) {
-            QTableWidgetItem* name = new QTableWidgetItem(info.name);
-            QTableWidgetItem* pid = new QTableWidgetItem(QString::number(info.pid));
+        for (const ProcessInfo &info : list) {
+            QTableWidgetItem *name = new QTableWidgetItem(info.name);
+            QTableWidgetItem *pid = new QTableWidgetItem(QString::number(info.pid));
 
             const int row = table->rowCount();
             table->setRowCount(row + 1);

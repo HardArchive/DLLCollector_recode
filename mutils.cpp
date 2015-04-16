@@ -9,7 +9,7 @@
 #include <QtCore>
 
 //Project
-#include "functions.h"
+#include "mutils.h"
 #include "mainwindow.h"
 
 QString getWinDir()
@@ -17,7 +17,7 @@ QString getWinDir()
     return QString(qgetenv("WINDIR"));
 }
 
-bool isSubPath(const QString& dir, const QString& path)
+bool isSubPath(const QString &dir, const QString &path)
 {
     if (dir.isEmpty())
         return false;
@@ -32,9 +32,9 @@ bool isSubPath(const QString& dir, const QString& path)
     return !nativePath.indexOf(nativeDir, Qt::CaseInsensitive);
 }
 
-bool getModulesListFromProcessID(int PID, QList<QString>& modules)
+bool getModulesListFromProcessID(int PID, QList<QString> &modules)
 {
-    auto w2s = [](const wchar_t* str) {
+    auto w2s = [](const wchar_t *str) {
         return QString::fromWCharArray( str );
     };
 
@@ -58,7 +58,7 @@ bool getModulesListFromProcessID(int PID, QList<QString>& modules)
     return false;
 }
 
-bool getProcessList(QList<ProcessInfo>& list)
+bool getProcessList(QList<ProcessInfo> &list)
 {
     PROCESSENTRY32 pe32;
     pe32.dwSize = sizeof(PROCESSENTRY32);
@@ -90,7 +90,7 @@ QString getFilePathFromPID(int PID)
         return QString();
     }
 
-    wchar_t bufPath[MAX_PATH]{};
+    wchar_t bufPath[MAX_PATH] {};
     DWORD result = GetModuleFileNameEx(hProcess, NULL, bufPath, MAX_PATH - 1);
     CloseHandle(hProcess);
 
@@ -110,7 +110,7 @@ qint64 getPIDFromHWND(qintptr hWnd)
     return tmpPID;
 }
 
-qintptr getHWindowFromPoint(const QPoint& point)
+qintptr getHWindowFromPoint(const QPoint &point)
 {
     POINT tmpPoint = { point.x(), point.y() };
     HWND tmpHWnd = WindowFromPoint(tmpPoint);
@@ -121,7 +121,7 @@ qintptr getHWindowFromPoint(const QPoint& point)
 QString findPathQt()
 {
     //Ищем в параметрах среды
-    const wchar_t* QT_CORE_FILE = L"Qt5Core.dll";
+    const wchar_t *QT_CORE_FILE = L"Qt5Core.dll";
     const DWORD nBufferLength = 255;
     wchar_t lpBuffer[nBufferLength];
     bool findEnv = SearchPath(NULL,

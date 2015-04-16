@@ -15,4 +15,3 @@
 #define addLogErr(message) MainWindow::_addLog(Q_FUNC_INFO, message, c_warning)
 
 #endif // DEBUG
-
