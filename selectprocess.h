@@ -19,7 +19,7 @@ class SelectProcess : public QDialog {
 
 private:
     Ui::SelectProcess *ui;
-    qint64 m_PID = -1;
+    uint m_PID = -1;
 
 public:
     explicit SelectProcess(QWidget *parent = 0);
@@ -27,7 +27,7 @@ public:
     qint64 getPID() const;
 
 signals:
-    void processSelected(qint64 PID);
+    void processSelected(uint PID);
 
 private slots:
     void on_pushButton_Update_clicked();

@@ -519,7 +519,7 @@ void MainWindow::on_toolButton_HWnd_pressed()
 void MainWindow::on_toolButton_PID_clicked()
 {
     SelectProcess sp(this);
-    connect(&sp, SIGNAL(processSelected(qint64)), this, SLOT(processSelected(qint64)));
+    connect(&sp, SIGNAL(processSelected(uint)), this, SLOT(processSelected(uint)));
     sp.show();
     sp.exec();
 }
