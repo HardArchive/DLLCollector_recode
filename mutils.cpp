@@ -32,8 +32,10 @@ bool isSubPath(const QString &dir, const QString &path)
     return !nativePath.indexOf(nativeDir, Qt::CaseInsensitive);
 }
 
-bool getModulesListFromProcessID(int PID, QList<QString> &modules)
+bool getModulesListFromProcessID(int PID, QStringList &modules)
 {
+    modules.clear();
+    
     auto w2s = [](const wchar_t *str) {
         return QString::fromWCharArray( str );
     };
@@ -82,7 +84,7 @@ bool getProcessList(QList<ProcessInfo> &list)
     return false;
 }
 
-QString getFilePathFromPID(int PID)
+QString getFilePathFromPID(uint PID)
 {
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
     if (hProcess == 0) {
@@ -102,7 +104,7 @@ QString getFilePathFromPID(int PID)
     return QString::fromWCharArray(bufPath);
 }
 
-qint64 getPIDFromHWND(qintptr hWnd)
+uint getPIDFromHWND(qintptr hWnd)
 {
     DWORD tmpPID{};
     GetWindowThreadProcessId(reinterpret_cast<HWND>(hWnd), &tmpPID);

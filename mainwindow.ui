@@ -454,6 +454,12 @@
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
         </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
+        </property>
         <property name="columnCount">
          <number>1</number>
         </property>
@@ -509,7 +515,7 @@
          <string>Обновляем дерево зависимостей</string>
         </property>
         <property name="text">
-         <string>Обновить дерево</string>
+         <string>Обновить информацию</string>
         </property>
        </widget>
       </item>

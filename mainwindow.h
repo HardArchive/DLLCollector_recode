@@ -19,7 +19,8 @@ QT_END_NAMESPACE
 #include "selectprocess.h"
 #include "debug.h"
 
-namespace Ui {
+namespace Ui
+{
     class MainWindow;
 }
 
@@ -31,9 +32,10 @@ enum TypesMessage {
     c_fatal,
 };
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow
+{
     Q_OBJECT
-
+    
 private:
     enum ItemTypes {
         ItemMain,
@@ -41,43 +43,51 @@ private:
         ItemSystem,
         ItemOther,
     };
-
-    //Private variables
+    struct Profile {
+        QString qtLibs;
+        QString qtPlugins;
+        QStringList inclusions;
+    };
+    
 private:
     Ui::MainWindow *ui{};
+    QMap<QString, Profile> m_profiles{};
+    QStringList m_inclusions;
     QSettings *m_settings{};
-    qintptr m_hWnd{};
-    qint64 m_PID{};
-    QString m_exePath{};
-    QString m_copyTo{};
-    QString m_windowsDir{};
-    QString m_QtLibs{};
-    QString m_QtPlugins{};
     QProcess m_process{};
-
+    QList<QAction *> m_actions{};
+    QStringList m_moduleList{};
+    
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-    bool eventFilter(QObject *obj, QEvent *event);
+    
     static QTableWidget *m_log;
-
+    
 private slots:
     void clearFields();
     void saveSettings();
     void loadSettings();
     void setHWnd(qintptr hWnd);
-    void setPID(qint64 PID);
+    void setPID(uint PID);
     void setExe(const QString &path);
     void setCopyTo(const QString &path);
     void setQtLibs(const QString &path);
     void setQtPlugins(const QString &path);
-    void processSelected(qint64 PID);
+    void processSelected(uint PID);
     void processStarted();
     void processFinished(int exitStatus);
     void processError();
-    void updateDependencyTree();
-
+    
+    //Дерево зависимостей
+    void addInclusionFromTree();
+    void deleteInclusionFromTree();
+    void editorInclusionFromTree();
+    void initActionsDependencyTree();
+    Qt::CheckState isInclusion(const QString &path);
+    void updateCheckedTopItemTree(QTreeWidgetItem *topItem, int column = 0);
+    void updateDependencyTree(bool updatedModules = true);
+    
     void on_treeWidget_DependencyTree_itemChanged(QTreeWidgetItem *item, int column);
     void on_treeWidget_DependencyTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
     void on_treeWidget_DependencyTree_customContextMenuRequested(const QPoint &pos);
@@ -89,7 +99,7 @@ private slots:
     void on_toolButton_Kill_clicked();
     void on_toolButton_SelectDirCopyTo_clicked();
     void on_toolButton_CopyTo_clicked();
-    void on_comboBox_QtProfil_activated(int arg1);
+    void on_comboBox_QtProfil_activated(int idx);
     void on_toolButton_SaveProfil_clicked();
     void on_toolButton_DeleteProfil_clicked();
     void on_toolButton_QtLibs_clicked();
@@ -99,16 +109,20 @@ private slots:
     void on_pushButton_UpdateTree_clicked();
     void on_pushButton_CleanLog_clicked();
     void on_pushButton_CopyLog_clicked();
-
-
+    
 public slots:
     static void _addLog(const QString &fun, const QString &mes, TypesMessage type = c_general);
-
+    
+    // QObject interface
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+    
     // QWidget interface
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     void closeEvent(QCloseEvent *event);
+    
 };
 
 #endif // MAINWINDOW_H

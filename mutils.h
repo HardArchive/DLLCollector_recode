@@ -17,10 +17,10 @@ struct ProcessInfo {
 
 QString getWinDir();
 bool isSubPath(const QString &dir, const QString &path);
-bool getModulesListFromProcessID(int PID, QList<QString> &modules);
+bool getModulesListFromProcessID(int PID, QStringList &modules);
 bool getProcessList(QList<ProcessInfo> &list);
-QString getFilePathFromPID(int PID);
-qint64 getPIDFromHWND(qintptr hWnd);
+QString getFilePathFromPID(uint PID);
+uint getPIDFromHWND(qintptr hWnd);
 qintptr getHWindowFromPoint(const QPoint &point);
 QString findPathQt();
 
