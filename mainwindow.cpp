@@ -412,7 +412,7 @@ void MainWindow::updateDependencyTree(bool updatedModules)
     QTreeWidgetItem *pluginsLibrary = makeItem(trUtf8("Плагины Qt"), Qt::Unchecked);
     QTreeWidgetItem *systemLibrary = makeItem(trUtf8("Системные библиотеки"), Qt::Unchecked);
     QTreeWidgetItem *otherLibrary = makeItem(trUtf8("Остальные библиотеки"), Qt::Unchecked);
-    
+
     const QString &LIBS = ui->lineEdit_QtLibs->text();
     const QString &PLUGINS = ui->lineEdit_QtPlugins->text();
     const QString &SYSTEM = getWinDir();
@@ -446,7 +446,7 @@ void MainWindow::updateDependencyTree(bool updatedModules)
     ui->treeWidget_DependencyTree->addTopLevelItem(pluginsLibrary);
     ui->treeWidget_DependencyTree->addTopLevelItem(systemLibrary);
     ui->treeWidget_DependencyTree->addTopLevelItem(otherLibrary);
-    
+
     addLog(trUtf8("Дерево зависимостей обновлено."));
 }
 
@@ -673,7 +673,8 @@ void MainWindow::on_toolButton_SaveProfil_clicked()
                                    QLineEdit::Normal,
                                    dir.dirName(),
                                    &selection,
-                                   flags);
+                                   flags
+                               );
     if(selection && !nameProfil.isEmpty()) {
     
         Profile profile;
