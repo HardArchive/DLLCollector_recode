@@ -311,14 +311,18 @@ void MainWindow::deleteInclusionFromTree()
 
 void MainWindow::editorInclusionFromTree()
 {
+    bool ok;
     QString tmp = QInputDialog::getMultiLineText(
                       this,
                       trUtf8("Редактор включений"),
                       trUtf8("Включения"),
-                      m_inclusions.join('\n'));
-                      
-    m_inclusions = tmp.split('\n');
-    m_inclusions.removeDuplicates();
+                      m_inclusions.join('\n'),
+                      &ok
+                  );
+    if(ok) {
+        m_inclusions = tmp.split('\n');
+        m_inclusions.removeDuplicates();
+    }
 }
 
 void MainWindow::initActionsDependencyTree()
