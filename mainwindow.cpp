@@ -94,14 +94,17 @@ void MainWindow::saveSettings()
     m_settings->clear();
     
     //Сохранение параметров GUI
-    m_settings->setValue(Settings::Profile::SelectedProfil, ui->comboBox_QtProfil->currentIndex());
     m_settings->setValue(Settings::GUI::EnvChecked, ui->envExec->isChecked());
     m_settings->setValue(Settings::GUI::VisibleLog, ui->checkBox_Log->isChecked());
     m_settings->setValue(Settings::GUI::WindowSize, size());
     
     //Сохранение профилей
-    m_settings->beginGroup(Settings::Profile::QtProfile);
     const int profCount = ui->comboBox_QtProfil->count();
+    
+    if(profCount)
+        m_settings->setValue(Settings::Profile::SelectedProfil, ui->comboBox_QtProfil->currentIndex());
+        
+    m_settings->beginGroup(Settings::Profile::QtProfile);
     for(int i = 0; i < profCount; ++i) {
         const QString profilName = ui->comboBox_QtProfil->itemText(i);
         m_settings->beginGroup(profilName);
@@ -171,7 +174,6 @@ void MainWindow::loadSettings()
     const QVariant &profile = m_settings->value(Settings::Profile::SelectedProfil);
     if(!profile.isNull()) {
         const int indexProfil = profile.toInt();
-        ui->comboBox_QtProfil->setCurrentIndex(indexProfil);
         on_comboBox_QtProfil_activated(indexProfil);
     }
 }
@@ -412,7 +414,7 @@ void MainWindow::updateDependencyTree(bool updatedModules)
     QTreeWidgetItem *pluginsLibrary = makeItem(trUtf8("Плагины Qt"), Qt::Unchecked);
     QTreeWidgetItem *systemLibrary = makeItem(trUtf8("Системные библиотеки"), Qt::Unchecked);
     QTreeWidgetItem *otherLibrary = makeItem(trUtf8("Остальные библиотеки"), Qt::Unchecked);
-
+    
     const QString &LIBS = ui->lineEdit_QtLibs->text();
     const QString &PLUGINS = ui->lineEdit_QtPlugins->text();
     const QString &SYSTEM = getWinDir();
@@ -446,7 +448,7 @@ void MainWindow::updateDependencyTree(bool updatedModules)
     ui->treeWidget_DependencyTree->addTopLevelItem(pluginsLibrary);
     ui->treeWidget_DependencyTree->addTopLevelItem(systemLibrary);
     ui->treeWidget_DependencyTree->addTopLevelItem(otherLibrary);
-
+    
     addLog(trUtf8("Дерево зависимостей обновлено."));
 }
 
@@ -639,19 +641,18 @@ void MainWindow::on_toolButton_CopyTo_clicked()
         addLogErr(trUtf8("Не указана директория в которую требуется скопировать библиотеки Qt!"));
 }
 
-//Выбор профиля
 void MainWindow::on_comboBox_QtProfil_activated(int idx)
 {
+    ui->comboBox_QtProfil->setCurrentIndex(idx);
     const QString nameProfil = ui->comboBox_QtProfil->itemText(idx);
     
     addLog(trUtf8("Выбран профиль: \"%1\"").arg(nameProfil));
     
     const QString nameProfile = ui->comboBox_QtProfil->currentText();
-    m_inclusions = m_profiles[nameProfil].inclusions;
     
+    m_inclusions = m_profiles[nameProfil].inclusions;
     setQtLibs(m_profiles[nameProfil].qtLibs);
     setQtPlugins(m_profiles[nameProfil].qtPlugins);
-    
     
     updateDependencyTree(false);
 }
@@ -692,6 +693,9 @@ void MainWindow::on_toolButton_SaveProfil_clicked()
             
             addLog(trUtf8("Профиль \"%1\" перезаписан!").arg(nameProfil));
         }
+        
+        int idx = ui->comboBox_QtProfil->findText(nameProfil);
+        on_comboBox_QtProfil_activated(idx);
     }
 }
 
@@ -712,6 +716,9 @@ void MainWindow::on_toolButton_DeleteProfil_clicked()
         ui->comboBox_QtProfil->removeItem(currentIdx);
         m_profiles.remove(currentText);
         addLog(trUtf8("Профиль \"%1\" удалён!").arg(currentText));
+        
+        int idx = ui->comboBox_QtProfil->currentIndex();
+        on_comboBox_QtProfil_activated(idx);
     }
 }
 

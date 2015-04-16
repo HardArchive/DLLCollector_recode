@@ -18,9 +18,6 @@ contains(QT_ARCH, i386) {
     TARGET = DLLCollector_recode_x64
 }
 
-Release: DESTDIR = Release
-Debug:   DESTDIR = Debug
-
 LIBS += -lpsapi
 
 SOURCES += main.cpp \
