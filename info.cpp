@@ -4,7 +4,7 @@
 namespace Info
 {
     const int MAJOR = 1;
-    const int MINOR = 6;
+    const int MINOR = 7;
     
     const QString ApplicationName = "DLLCollector_recode";
     const QString OrganizationName = "Illusion";

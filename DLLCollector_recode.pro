@@ -10,7 +10,7 @@ QT  += core gui widgets
 CONFIG += C++14
 
 #Версия для разработчиков
-#DEFINES += DEV_PROJECT
+DEFINES += DEV_PROJECT
 
 contains(QT_ARCH, i386) {
     TARGET = DLLCollector_recode_x32
