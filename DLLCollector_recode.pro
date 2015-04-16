@@ -10,7 +10,7 @@ QT  += core gui widgets
 CONFIG += C++14
 
 #Версия для разработчиков
-DEFINES += DEV_PROJECT
+#DEFINES += DEV_PROJECT
 
 contains(QT_ARCH, i386) {
     TARGET = DLLCollector_recode_x32
@@ -24,13 +24,13 @@ SOURCES += main.cpp \
            mainwindow.cpp \
            selectprocess.cpp \
            info.cpp \
-    mutils.cpp
+           mutils.cpp
 
 HEADERS += mainwindow.h \
            selectprocess.h \
            debug.h \
            info.h \
-    mutils.h
+           mutils.h
 
 FORMS   += mainwindow.ui \
            selectprocess.ui \
